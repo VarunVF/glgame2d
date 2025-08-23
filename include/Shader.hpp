@@ -1,6 +1,9 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 
 class Shader
@@ -27,6 +30,11 @@ public:
         glDeleteShader(fragmentShader);
     }
 
+    unsigned int uniformLocation(const char* uniformName) const
+    {
+        return glGetUniformLocation(shaderProgram, uniformName);
+    }
+
 public:
     unsigned int shaderProgram;
 
@@ -36,11 +44,15 @@ private:
         "layout (location = 0) in vec2 aPos;\n"
         "layout (location = 1) in vec2 aTexCoord;\n"
         "\n"
+        "uniform mat4 u_Model;\n"
+        "uniform mat4 u_View;\n"
+        "uniform mat4 u_Projection;\n"
+        "\n"
         "out vec2 TexCoord;\n"
         "\n"
         "void main()\n"
         "{\n"
-        "    gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);\n"
+        "    gl_Position = u_Projection * u_View * u_Model * vec4(aPos, 0.0, 1.0);\n"
         "    TexCoord = aTexCoord;\n"
         "}\n";
 
