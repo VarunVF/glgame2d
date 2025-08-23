@@ -10,6 +10,7 @@ add_subdirectory("external/glfw/")
 # Add our app source
 add_executable(app
 	"src/main.cpp"
+	"src/Window.cpp"
 	"src/glad.c"
 )
 target_include_directories(app PRIVATE
