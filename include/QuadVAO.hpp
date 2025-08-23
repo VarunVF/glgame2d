@@ -44,10 +44,10 @@ private:
     // Vertex positions in NDC range [-1.0, 1.0]
 	float vertices[16] = {
 		// positions 	// texcoords
-		0.0f, 0.0f,     0.0f, 0.0f,	    // bottom left	
-		0.0f, 1.0f,     0.0f, 1.0f,	    // top left
-		1.0f, 1.0f,     1.0f, 1.0f,     // top right
-		1.0f, 0.0f,     1.0f, 0.0f,     // bottom right
+		 0.0f, -1.0f,    0.0f, 0.0f,     // bottom left	
+		 0.0f,  0.0f,    0.0f, 1.0f,     // top left
+		 1.0f,  0.0f,    1.0f, 1.0f,     // top right
+		 1.0f, -1.0f,    1.0f, 0.0f,     // bottom right
 	};
 
 	unsigned int indices[6] = {

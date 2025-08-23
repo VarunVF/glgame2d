@@ -13,6 +13,8 @@ public:
 	void swapBuffers();
 	void pollEvents();
 
+	void getSize(int* width, int* height) const;
+
 private:
 	static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 

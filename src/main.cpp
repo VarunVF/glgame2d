@@ -16,11 +16,19 @@ int main(void)
 
 	QuadVAO vao;
 	Shader shader;
-	Renderer renderer(shader);
+	Renderer renderer(shader, window);
 
-	Sprite sprite1{ glm::vec2(0.0f, 0.0f), Texture{ "assets/container.jpg" } };
-	
-	Sprite sprite2{ glm::vec2(0.0f, 0.0f), Texture{ "assets/awesomeface.png" } };
+	Sprite sprite1{
+		glm::vec2(1.0f, 0.0f),
+		glm::vec2(64.0f, 64.0f),
+		Texture{ "assets/container.jpg" }
+	};
+
+	Sprite sprite2{
+		glm::vec2(0.0f, 0.0f),
+		glm::vec2(64.0f, 64.0f),
+		Texture{ "assets/awesomeface.png" }
+	};
 
 	while (!window.shouldClose())
 	{

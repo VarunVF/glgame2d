@@ -64,6 +64,11 @@ void Window::pollEvents()
 	glfwPollEvents();
 }
 
+void Window::getSize(int *width, int *height) const
+{
+    glfwGetWindowSize(m_Window, width, height);
+}
+
 void Window::framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);

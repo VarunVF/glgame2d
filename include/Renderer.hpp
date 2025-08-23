@@ -4,12 +4,14 @@
 
 #include "Shader.hpp"
 #include "Sprite.hpp"
+#include "Window.hpp"
 
 
 class Renderer
 {
 public:
-    Renderer(const Shader& shader)
+    Renderer(const Shader& shader, const Window& window)
+        : m_Window{ window }
     {
         // enable blending
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -21,8 +23,9 @@ public:
         m_ProjectionLoc = shader.uniformLocation("u_Projection");
 
         // transform matrices
-        glm::mat4 view(1.0f);       // camera is identity
-        glm::mat4 projection(1.0f); // map to window, identity for now
+        glm::mat4 view(1.0f);       // camera is identity for now
+        glm::mat4 projection(1.0f);
+        projection = glm::translate(projection, glm::vec3(-1.0f, 1.0f, 1.0f));
 
         // set global uniforms
         glUniformMatrix4fv(m_ViewLoc, 1, GL_FALSE, glm::value_ptr(view));
@@ -39,17 +42,33 @@ public:
     {
         // set per-sprite model uniform
         glm::mat4 model(1.0f);
-        model = glm::translate(model, glm::vec3(sprite.position, 1.0f));
+        
+        int width, height;
+        m_Window.getSize(&width, &height);
+        float scaleX = sprite.size[0] / width * 2;
+        float scaleY = sprite.size[1] / height * 2;
+        model = glm::scale(model, glm::vec3(scaleX, scaleY, 1.0f));
+        model = glm::translate(model, glm::vec3(sprite.position, 0.0f));
+
+        // debug matrix
+        // for (int i = 0; i < 4; i++) {
+        //     for (int j = 0; j < 4; j++)
+        //         std::cout << model[j][i] << "\t";
+        //     std::cout << "\n";
+        // }
+        // std::cout << "\n";
+
         glUniformMatrix4fv(m_ModelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
         // draw call
         glUseProgram(shader.shaderProgram);
-		glBindTexture(GL_TEXTURE_2D, sprite.texture.textureID);  // need to set
+		glBindTexture(GL_TEXTURE_2D, sprite.texture.textureID);
 		glBindVertexArray(vao.VAO);
 		glDrawElements(GL_TRIANGLES, vao.indicesCount, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
     }
 
 private:
+    const Window& m_Window;
     unsigned int m_ModelLoc, m_ViewLoc, m_ProjectionLoc;
 };
