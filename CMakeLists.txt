@@ -18,6 +18,10 @@ add_subdirectory("external/glfw/")
 # Add our app source
 add_executable(app
 	"src/main.cpp"
+	"src/QuadVAO.cpp"
+	"src/Renderer.cpp"
+	"src/Shader.cpp"
+	"src/Texture.cpp"
 	"src/Window.cpp"
 
 	"src/stb_image.c"

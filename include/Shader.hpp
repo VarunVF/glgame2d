@@ -1,45 +1,18 @@
 #pragma once
 
-#include <glad/glad.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
 
 class Shader
 {
 public:
-    Shader()
-    {
-        unsigned int vertexShader;
-        vertexShader = glCreateShader(GL_VERTEX_SHADER);
-        glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr);
-        glCompileShader(vertexShader);
+    Shader();
 
-        unsigned int fragmentShader;
-        fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-        glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr);
-        glCompileShader(fragmentShader);
-
-        shaderProgram = glCreateProgram();
-        glAttachShader(shaderProgram, vertexShader);
-        glAttachShader(shaderProgram, fragmentShader);
-        glLinkProgram(shaderProgram);
-        glUseProgram(shaderProgram);
-        glDeleteShader(vertexShader);
-        glDeleteShader(fragmentShader);
-    }
-
-    unsigned int uniformLocation(const char* uniformName) const
-    {
-        return glGetUniformLocation(shaderProgram, uniformName);
-    }
+    unsigned int uniformLocation(const char* uniformName) const;
 
 public:
     unsigned int shaderProgram;
 
 private:
-    const char* vertexShaderSource = 
+    const char* m_VertexShaderSource = 
         "#version 330 core\n"
         "layout (location = 0) in vec2 aPos;\n"
         "layout (location = 1) in vec2 aTexCoord;\n"
@@ -56,7 +29,7 @@ private:
         "    TexCoord = aTexCoord;\n"
         "}\n";
 
-    const char* fragmentShaderSource =
+    const char* m_FragmentShaderSource =
         "#version 330 core\n"
         "out vec4 FragColor;\n"
         "\n"
