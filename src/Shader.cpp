@@ -10,19 +10,44 @@ Shader::Shader()
     GLCall( vertexShader = glCreateShader(GL_VERTEX_SHADER) );
     GLCall( glShaderSource(vertexShader, 1, &m_VertexShaderSource, nullptr) );
     GLCall( glCompileShader(vertexShader) );
+    validateShaderSource(ShaderType::VERTEX, vertexShader);
 
     unsigned int fragmentShader;
     GLCall( fragmentShader = glCreateShader(GL_FRAGMENT_SHADER) );
     GLCall( glShaderSource(fragmentShader, 1, &m_FragmentShaderSource, nullptr) );
     GLCall( glCompileShader(fragmentShader) );
+    validateShaderSource(ShaderType::FRAGMENT, fragmentShader);
     
     GLCall( shaderProgram = glCreateProgram() );
     GLCall( glAttachShader(shaderProgram, vertexShader) );
     GLCall( glAttachShader(shaderProgram, fragmentShader) );
     GLCall( glLinkProgram(shaderProgram) );
+    GLCall( glValidateProgram(shaderProgram) );
+
     GLCall( glUseProgram(shaderProgram) );
     GLCall( glDeleteShader(vertexShader) );
     GLCall( glDeleteShader(fragmentShader) );
+}
+
+void Shader::validateShaderSource(ShaderType type, unsigned int shaderID)
+{
+    // Error detection
+    int result;
+    glGetShaderiv(shaderID, GL_COMPILE_STATUS, &result);
+    const char* typeStr = (type == ShaderType::VERTEX ? "vertex" : "fragment");
+
+    if (result == GL_FALSE)
+    {
+        int length;
+        glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &length);
+        char* message = (char*)alloca(length * sizeof(char));
+        glGetShaderInfoLog(shaderID, length, &length, message);
+
+        std::cerr << "[Shader] Failed to compile " << typeStr << " shader! " << message << "\n";
+        glDeleteShader(shaderID);
+    }
+    else
+        std::clog << "[Shader] Successfully compiled " << typeStr << "shader\n";
 }
 
 unsigned int Shader::uniformLocation(const char* uniformName) const

@@ -8,6 +8,10 @@ public:
 
     unsigned int uniformLocation(const char* uniformName) const;
 
+private:
+    enum class ShaderType { VERTEX, FRAGMENT };
+    static void validateShaderSource(ShaderType type, unsigned int shaderID);
+
 public:
     unsigned int shaderProgram;
 
