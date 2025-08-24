@@ -26,3 +26,8 @@ Texture::Texture(const char* assetPath)
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(data);
 }
+
+Texture::Texture()
+    : textureID{ 0 }
+{
+}

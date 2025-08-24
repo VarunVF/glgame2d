@@ -3,7 +3,7 @@ project(glgame2d)
 
 include(FetchContent)
 
-# GLM
+# Obtain GLM
 FetchContent_Declare(
 	glm
 	GIT_REPOSITORY	https://github.com/g-truc/glm.git
@@ -11,7 +11,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(glm)
 
-# GLFW
+# Obtain GLFW
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
@@ -28,6 +28,7 @@ add_library(glgame2d
 	"src/QuadVAO.cpp"
 	"src/Renderer.cpp"
 	"src/Shader.cpp"
+	"src/Sprite.cpp"
 	"src/Texture.cpp"
 	"src/Window.cpp"
 
@@ -46,6 +47,9 @@ target_link_libraries(glgame2d PUBLIC
 	glfw
 	glm
 )
+
+# Build tests
+add_subdirectory("tests/")
 
 # Build example project
 add_subdirectory("example/")
