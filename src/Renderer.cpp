@@ -1,4 +1,5 @@
 #include "glgame2d/Renderer.hpp"
+#include "glgame2d/GLCall.hpp"
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -10,8 +11,8 @@ Renderer::Renderer(const Shader& shader, const Window& window)
     : m_Window{ window }
 {
     // enable blending
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glEnable(GL_BLEND);
+    GLCall( glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) );
+    GLCall( glEnable(GL_BLEND) );
 
     // get uniform locations
     m_ModelLoc      = shader.uniformLocation("u_Model");
@@ -24,14 +25,14 @@ Renderer::Renderer(const Shader& shader, const Window& window)
     projection = glm::translate(projection, glm::vec3(-1.0f, 1.0f, 1.0f));
 
     // set global uniforms
-    glUniformMatrix4fv(m_ViewLoc, 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(m_ProjectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+    GLCall( glUniformMatrix4fv(m_ViewLoc, 1, GL_FALSE, glm::value_ptr(view)) );
+    GLCall( glUniformMatrix4fv(m_ProjectionLoc, 1, GL_FALSE, glm::value_ptr(projection)) );
 }
 
 void Renderer::clear() const
 {
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    GLCall( glClearColor(0.2f, 0.3f, 0.3f, 1.0f) );
+    GLCall( glClear(GL_COLOR_BUFFER_BIT) );
 }
 
 void Renderer::drawSprite(const Sprite& sprite, const Shader& shader, const QuadVAO& vao) const
@@ -53,12 +54,12 @@ void Renderer::drawSprite(const Sprite& sprite, const Shader& shader, const Quad
     // }
     // std::cout << "\n";
 
-    glUniformMatrix4fv(m_ModelLoc, 1, GL_FALSE, glm::value_ptr(model));
+    GLCall( glUniformMatrix4fv(m_ModelLoc, 1, GL_FALSE, glm::value_ptr(model)) );
 
     // draw call
-    glUseProgram(shader.shaderProgram);
-    glBindTexture(GL_TEXTURE_2D, sprite.texture.textureID);
-    glBindVertexArray(vao.VAO);
-    glDrawElements(GL_TRIANGLES, vao.indicesCount, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
+    GLCall( glUseProgram(shader.shaderProgram) );
+    GLCall( glBindTexture(GL_TEXTURE_2D, sprite.texture.textureID) );
+    GLCall( glBindVertexArray(vao.VAO) );
+    GLCall( glDrawElements(GL_TRIANGLES, vao.indicesCount, GL_UNSIGNED_INT, 0) );
+    GLCall( glBindVertexArray(0) );
 }
