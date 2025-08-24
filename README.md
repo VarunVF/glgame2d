@@ -1,4 +1,4 @@
-# window2d
+# glgame2d
 
 ## Installation
 
@@ -8,4 +8,3 @@ For example, on Debian and derivatives like Ubuntu:
 ```
 sudo apt install libwayland-dev libxkbcommon-dev xorg-dev
 ```
-
