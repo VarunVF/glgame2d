@@ -1,23 +1,30 @@
 cmake_minimum_required(VERSION 3.11)
-project(window2d)
+project(glgame2d)
+
 include(FetchContent)
 
+# GLM
 FetchContent_Declare(
 	glm
 	GIT_REPOSITORY	https://github.com/g-truc/glm.git
-	GIT_TAG 	bf71a834948186f4097caa076cd2663c69a10e1e #refs/tags/1.0.1
+	GIT_TAG 		1.0.1
 )
 FetchContent_MakeAvailable(glm)
 
-# Build GLFW library
+# GLFW
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-add_subdirectory("external/glfw/")
+FetchContent_Declare(
+	glfw
+	GIT_REPOSITORY	https://github.com/glfw/glfw.git
+	GIT_TAG 		3.4
+)
+FetchContent_MakeAvailable(glfw)
 
-# Add our app source
-add_executable(app
-	"src/main.cpp"
+
+# Add our source
+add_library(glgame2d
 	"src/QuadVAO.cpp"
 	"src/Renderer.cpp"
 	"src/Shader.cpp"
@@ -27,16 +34,18 @@ add_executable(app
 	"src/stb_image.c"
 	"src/glad.c"
 )
-target_include_directories(app PRIVATE
+target_include_directories(glgame2d PUBLIC
 	"include/"
 	${OPENGL_INCLUDE_DIR}
 )
 
-# Link our app to libraries
+# Link to libraries
 find_package(OpenGL REQUIRED)
-target_link_libraries(app PRIVATE
+target_link_libraries(glgame2d PUBLIC
 	${OPENGL_LIBRARIES}
 	glfw
-	glm::glm
+	glm
 )
 
+# Build example project
+add_subdirectory("example/")
