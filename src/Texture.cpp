@@ -1,4 +1,4 @@
-#include "Texture.hpp"
+#include "glgame2d/Texture.hpp"
 
 #include <stdexcept>
 

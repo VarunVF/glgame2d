@@ -1,4 +1,4 @@
-#include "QuadVAO.hpp"
+#include "glgame2d/QuadVAO.hpp"
 
 #include <glad/glad.h>
 

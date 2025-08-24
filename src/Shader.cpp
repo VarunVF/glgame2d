@@ -1,4 +1,4 @@
-#include "Shader.hpp"
+#include "glgame2d/Shader.hpp"
 
 #include <glad/glad.h>
 

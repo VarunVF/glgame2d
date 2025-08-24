@@ -1,4 +1,4 @@
-#include "Window.hpp"
+#include "glgame2d/Window.hpp"
 
 #include <iostream>
 #include <stdexcept>

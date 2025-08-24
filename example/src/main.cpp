@@ -1,29 +1,28 @@
-#include <iostream>
+#include <glm/glm.hpp>
 
-
-#include "Window.hpp"
-#include "QuadVAO.hpp"
-#include "Shader.hpp"
-#include "Renderer.hpp"
+#include <glgame2d/Window.hpp>
+#include <glgame2d/QuadVAO.hpp>
+#include <glgame2d/Shader.hpp>
+#include <glgame2d/Renderer.hpp>
 
 
 int main(void)
 {
-	Window window(640, 480, "title");
+	Window window{ 640, 480, "title" };
 
 	QuadVAO vao;
 	Shader shader;
-	Renderer renderer(shader, window);
+	Renderer renderer{ shader, window };
 
-	Sprite sprite1{
-		glm::vec2(1.0f, 0.0f),
-		glm::vec2(64.0f, 64.0f),
+	Sprite sprite1 {
+		glm::vec2{ 1.0f, 0.0f },
+		glm::vec2{ 64.0f, 64.0f },
 		Texture{ "assets/container.jpg" }
 	};
 
-	Sprite sprite2{
-		glm::vec2(0.0f, 0.0f),
-		glm::vec2(64.0f, 64.0f),
+	Sprite sprite2 {
+		glm::vec2{ 0.0f, 0.0f },
+		glm::vec2{ 64.0f, 64.0f },
 		Texture{ "assets/awesomeface.png" }
 	};
 
@@ -40,4 +39,3 @@ int main(void)
 
 	return 0;
 }
-
