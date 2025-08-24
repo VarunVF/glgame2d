@@ -1,7 +1,8 @@
 #pragma once
 
-#include <iostream>
 #include <cassert>
+#include <iostream>
+#include <unordered_map>
 
 #include <glad/glad.h>
 
@@ -15,6 +16,18 @@
 #endif // NDEBUG
 
 
+static std::unordered_map<GLenum, const char*> errorMessages {
+    { GL_INVALID_ENUM, "GL_INVALID_ENUM" },
+    { GL_INVALID_VALUE, "GL_INVALID_VALUE" },
+    { GL_INVALID_OPERATION, "GL_INVALID_OPERATION" },
+    { GL_STACK_OVERFLOW, "GL_STACK_OVERFLOW" },
+    { GL_STACK_UNDERFLOW, "GL_STACK_UNDERFLOW" },
+    { GL_OUT_OF_MEMORY, "GL_OUT_OF_MEMORY" },
+    { 0x0507, "GL_CONTEXT_LOST" },
+    { 0x8031, "GL_TABLE_TOO_LARGE" },
+};
+
+
 inline void GLClearError()
 {
     while (glGetError() != GL_NO_ERROR)
@@ -23,11 +36,12 @@ inline void GLClearError()
 
 inline bool GLLogCall(const char* function, const char* file, int line)
 {
+    bool wasSuccessful = true;
     while (GLenum error = glGetError())
     {
-        std::cout << "[OpenGL Error] (" << error << "):"
-            << function << " " << file << ":" << line;
-        return false;
+        std::cerr << "[OpenGL Error] (" << error << " - " << errorMessages[error] << "): "
+                  << function << " " << file << ":" << line << "\n";
+        wasSuccessful = false;
     }
-    return true;
+    return wasSuccessful;
 }
