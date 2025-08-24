@@ -6,6 +6,16 @@
 
 Shader::Shader()
 {
+    initShaders(m_VertexShaderSource, m_FragmentShaderSource);
+}
+
+Shader::Shader(const char* vertexShaderSource, const char* fragmentShaderSource)
+{
+    initShaders(vertexShaderSource, fragmentShaderSource);
+}
+
+void Shader::initShaders(const char* vertexShaderSource, const char* fragmentShaderSource)
+{
     unsigned int vertexShader;
     GLCall( vertexShader = glCreateShader(GL_VERTEX_SHADER) );
     GLCall( glShaderSource(vertexShader, 1, &m_VertexShaderSource, nullptr) );
@@ -47,7 +57,7 @@ void Shader::validateShaderSource(ShaderType type, unsigned int shaderID)
         glDeleteShader(shaderID);
     }
     else
-        std::clog << "[Shader] Successfully compiled " << typeStr << "shader\n";
+        std::clog << "[Shader] Successfully compiled " << typeStr << " shader\n";
 }
 
 unsigned int Shader::uniformLocation(const char* uniformName) const

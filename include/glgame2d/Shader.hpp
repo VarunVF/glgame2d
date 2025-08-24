@@ -5,10 +5,13 @@ class Shader
 {
 public:
     Shader();
+    Shader(const char* vertexShaderSource, const char* fragmentShaderSource);
 
     unsigned int uniformLocation(const char* uniformName) const;
 
 private:
+    void initShaders(const char* vertexShaderSource, const char* fragmentShaderSource);
+    
     enum class ShaderType { VERTEX, FRAGMENT };
     static void validateShaderSource(ShaderType type, unsigned int shaderID);
 
