@@ -31,7 +31,13 @@ Renderer::Renderer(const Shader& shader, const Window& window)
 
 void Renderer::clear() const
 {
-    GLCall( glClearColor(0.2f, 0.3f, 0.3f, 1.0f) );
+    GLCall( glClearColor(0.0f, 0.0f, 0.0f, 0.0f) );
+    GLCall( glClear(GL_COLOR_BUFFER_BIT) );
+}
+
+void Renderer::clear(const Color &color) const
+{
+    GLCall( glClearColor(color.red, color.green, color.blue, color.alpha) );
     GLCall( glClear(GL_COLOR_BUFFER_BIT) );
 }
 

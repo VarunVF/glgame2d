@@ -9,9 +9,19 @@
 class Renderer
 {
 public:
+    struct Color
+    {
+        float red   = 0.0f;
+        float green = 0.0f;
+        float blue  = 0.0f;
+        float alpha = 1.0f;
+    };
+
+public:
     Renderer(const Shader& shader, const Window& window);
     
     void clear() const;
+    void clear(const Color& color) const;
     void drawSprite(const Sprite& sprite, const Shader& shader, const QuadVAO& vao) const;
 
 private:
