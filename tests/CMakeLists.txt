@@ -18,6 +18,7 @@ enable_testing()
 
 add_executable(glgame2d_tests
     "tests.cpp"
+    "camera_tests.cpp"
     "shader_tests.cpp"
     "sprite_tests.cpp"
     "texture_tests.cpp"

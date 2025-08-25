@@ -1,5 +1,6 @@
 #include <glm/glm.hpp>
 
+#include <glgame2d/Camera.hpp>
 #include <glgame2d/Window.hpp>
 #include <glgame2d/QuadVAO.hpp>
 #include <glgame2d/Shader.hpp>
@@ -13,6 +14,8 @@ int main(void)
 	QuadVAO vao;
 	Shader shader;
 	Renderer renderer{ shader, window };
+
+	Camera camera;
 
 	Sprite sprite1 {
 		glm::vec2{ 1.0f, 0.0f },
@@ -28,8 +31,11 @@ int main(void)
 
 	while (!window.shouldClose())
 	{
+		camera.move(-0.001f, -0.001f);
+
 		renderer.clear();
 
+		renderer.beginScene(camera);
 		renderer.drawSprite(sprite1, shader, vao);
 		renderer.drawSprite(sprite2, shader, vao);
 

@@ -19,13 +19,9 @@ Renderer::Renderer(const Shader& shader, const Window& window)
     m_ViewLoc       = shader.uniformLocation("u_View");
     m_ProjectionLoc = shader.uniformLocation("u_Projection");
 
-    // transform matrices
-    glm::mat4 view(1.0f);       // camera is identity for now
+    // global projection matrix
     glm::mat4 projection(1.0f);
     projection = glm::translate(projection, glm::vec3(-1.0f, 1.0f, 1.0f));
-
-    // set global uniforms
-    GLCall( glUniformMatrix4fv(m_ViewLoc, 1, GL_FALSE, glm::value_ptr(view)) );
     GLCall( glUniformMatrix4fv(m_ProjectionLoc, 1, GL_FALSE, glm::value_ptr(projection)) );
 }
 
@@ -39,6 +35,12 @@ void Renderer::clear(const Color &color) const
 {
     GLCall( glClearColor(color.red, color.green, color.blue, color.alpha) );
     GLCall( glClear(GL_COLOR_BUFFER_BIT) );
+}
+
+void Renderer::beginScene(const Camera &camera) const
+{
+    const auto& view = camera.getViewMatrix();
+    GLCall( glUniformMatrix4fv(m_ViewLoc, 1, GL_FALSE, glm::value_ptr(view)) );
 }
 
 void Renderer::drawSprite(const Sprite& sprite, const Shader& shader, const QuadVAO& vao) const

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Camera.hpp"
 #include "QuadVAO.hpp"
 #include "Shader.hpp"
 #include "Sprite.hpp"
@@ -22,6 +23,8 @@ public:
     
     void clear() const;
     void clear(const Color& color) const;
+
+    void beginScene(const Camera& camera) const;
     void drawSprite(const Sprite& sprite, const Shader& shader, const QuadVAO& vao) const;
 
 private:
