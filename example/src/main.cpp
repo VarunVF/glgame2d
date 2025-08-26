@@ -2,7 +2,6 @@
 
 #include <glgame2d/Camera.hpp>
 #include <glgame2d/Window.hpp>
-#include <glgame2d/QuadVAO.hpp>
 #include <glgame2d/Shader.hpp>
 #include <glgame2d/Renderer.hpp>
 
@@ -11,7 +10,6 @@ int main(void)
 {
 	Window window{ 640, 480, "title" };
 
-	QuadVAO vao;
 	Shader shader;
 	Renderer renderer{ shader, window };
 
@@ -36,8 +34,8 @@ int main(void)
 		renderer.clear();
 
 		renderer.beginScene(camera);
-		renderer.drawSprite(sprite1, shader, vao);
-		renderer.drawSprite(sprite2, shader, vao);
+		renderer.drawSprite(sprite1, shader);
+		renderer.drawSprite(sprite2, shader);
 
 		window.swapBuffers();
 		window.pollEvents();

@@ -8,7 +8,7 @@
 
 
 Renderer::Renderer(const Shader& shader, const Window& window)
-    : m_Window{ window }
+    : m_Window{ window }, m_QuadVAO{}
 {
     // enable blending
     GLCall( glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) );
@@ -21,7 +21,7 @@ Renderer::Renderer(const Shader& shader, const Window& window)
 
     // global projection matrix
     glm::mat4 projection(1.0f);
-    projection = glm::translate(projection, glm::vec3(-1.0f, 1.0f, 1.0f));
+    projection = glm::translate(projection, glm::vec3(-1.0f, 1.0f, 0.0f));  // move to topleft
     GLCall( glUniformMatrix4fv(m_ProjectionLoc, 1, GL_FALSE, glm::value_ptr(projection)) );
 }
 
@@ -43,7 +43,7 @@ void Renderer::beginScene(const Camera &camera) const
     GLCall( glUniformMatrix4fv(m_ViewLoc, 1, GL_FALSE, glm::value_ptr(view)) );
 }
 
-void Renderer::drawSprite(const Sprite& sprite, const Shader& shader, const QuadVAO& vao) const
+void Renderer::drawSprite(const Sprite& sprite, const Shader& shader) const
 {
     // set per-sprite model uniform
     glm::mat4 model(1.0f);
@@ -54,20 +54,12 @@ void Renderer::drawSprite(const Sprite& sprite, const Shader& shader, const Quad
     model = glm::scale(model, glm::vec3(scaleX, scaleY, 1.0f));
     model = glm::translate(model, glm::vec3(sprite.position, 0.0f));
 
-    // debug matrix
-    // for (int i = 0; i < 4; i++) {
-    //     for (int j = 0; j < 4; j++)
-    //         std::cout << model[j][i] << "\t";
-    //     std::cout << "\n";
-    // }
-    // std::cout << "\n";
-
     GLCall( glUniformMatrix4fv(m_ModelLoc, 1, GL_FALSE, glm::value_ptr(model)) );
 
     // draw call
     GLCall( glUseProgram(shader.shaderProgram) );
     GLCall( glBindTexture(GL_TEXTURE_2D, sprite.texture.textureID) );
-    GLCall( glBindVertexArray(vao.VAO) );
-    GLCall( glDrawElements(GL_TRIANGLES, vao.indicesCount, GL_UNSIGNED_INT, 0) );
+    GLCall( glBindVertexArray(m_QuadVAO.VAO) );
+    GLCall( glDrawElements(GL_TRIANGLES, m_QuadVAO.indicesCount, GL_UNSIGNED_INT, 0) );
     GLCall( glBindVertexArray(0) );
 }
