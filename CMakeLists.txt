@@ -26,6 +26,7 @@ FetchContent_MakeAvailable(glfw)
 # Add our source
 add_library(glgame2d
 	"src/Camera.cpp"
+	"src/Clock.cpp"
 	"src/QuadVAO.cpp"
 	"src/Renderer.cpp"
 	"src/Shader.cpp"

@@ -60,9 +60,19 @@ void Window::swapBuffers()
 	glfwSwapBuffers(m_Window);
 }
 
-void Window::pollEvents()
+void Window::pollEvents() const
 {
 	glfwPollEvents();
+}
+
+void Window::enableVSync() const
+{
+	glfwSwapInterval(1);
+}
+
+void Window::disableVSync() const
+{
+	glfwSwapInterval(0);
 }
 
 void Window::getSize(int *width, int *height) const

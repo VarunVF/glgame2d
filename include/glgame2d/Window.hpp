@@ -11,7 +11,10 @@ public:
 
 	bool shouldClose();
 	void swapBuffers();
-	void pollEvents();
+	void pollEvents() const;
+
+	void enableVSync() const;
+	void disableVSync() const;
 
 	void getSize(int* width, int* height) const;
 
