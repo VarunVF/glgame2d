@@ -20,6 +20,14 @@ public:
     void move(float x, float y);
 
     /**
+     * @brief Scale the virtual camera view, by the same amount on both the x-axis and y-axis.
+     * 
+     * @param amount Multiplier value for scale.
+     * Values more than 1.0f will magnify, and values less than 1.0f will shrink.
+     */
+    void scale(float amount);
+
+    /**
      * @brief Get the View Matrix object
      * 
      * @return const glm::mat4& 

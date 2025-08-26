@@ -15,6 +15,11 @@ void Camera::move(float x, float y)
     m_ViewMatrix = glm::translate(m_ViewMatrix, glm::vec3(-x, -y, 0.0f));
 }
 
+void Camera::scale(float amount)
+{
+    m_ViewMatrix = glm::scale(m_ViewMatrix, glm::vec3(amount, amount, 1.0f));
+}
+
 const glm::mat4& Camera::getViewMatrix() const
 {
     return m_ViewMatrix;

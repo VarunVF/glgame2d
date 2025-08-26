@@ -26,10 +26,12 @@ int main(void)
 		glm::vec2{ 64.0f, 64.0f },
 		Texture{ "assets/awesomeface.png" }
 	};
+	
+	camera.scale(2.0f);
 
 	while (!window.shouldClose())
 	{
-		camera.move(-0.001f, -0.001f);
+		// camera.move(-0.001f, -0.001f);
 
 		renderer.clear();
 
