@@ -32,8 +32,12 @@ int main(void)
 		Texture{ "assets/awesomeface.png" }
 	};
 
+	camera.setScale(1.5f);
+	
 	while (!window.shouldClose())
 	{
+		camera.moveEaseTowards(sprite2, window);
+
 		renderer.clear();
 
 		renderer.beginScene(camera);
