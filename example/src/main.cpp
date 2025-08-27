@@ -12,13 +12,13 @@
 int main(void)
 {
 	Window window{ 640, 480, "title" };
-	// window.disableVSync();
+	window.disableVSync();
 
 	Shader shader;
 	Renderer renderer{ shader, window };
 
 	Camera camera;
-	Clock clock{ 60.0f };
+	Clock clock{ 120.0f };
 
 	Sprite sprite1 {
 		glm::vec2{ 1.0f, 0.0f },
@@ -39,8 +39,8 @@ int main(void)
 		renderer.clear();
 
 		renderer.beginScene(camera);
-		renderer.drawSprite(sprite1, shader);
-		renderer.drawSprite(sprite2, shader);
+		renderer.drawSprite(sprite1);
+		renderer.drawSprite(sprite2);
 
 		window.swapBuffers();
 		window.pollEvents();

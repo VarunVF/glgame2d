@@ -14,6 +14,16 @@ Shader::Shader(const char* vertexShaderSource, const char* fragmentShaderSource)
     initShaders(vertexShaderSource, fragmentShaderSource);
 }
 
+unsigned int Shader::uniformLocation(const char* uniformName) const
+{
+    return glGetUniformLocation(shaderProgram, uniformName);
+}
+
+void Shader::bind() const
+{
+    glUseProgram(shaderProgram);
+}
+
 void Shader::initShaders(const char* vertexShaderSource, const char* fragmentShaderSource)
 {
     unsigned int vertexShader;
@@ -33,10 +43,12 @@ void Shader::initShaders(const char* vertexShaderSource, const char* fragmentSha
     GLCall( glAttachShader(shaderProgram, fragmentShader) );
     GLCall( glLinkProgram(shaderProgram) );
     GLCall( glValidateProgram(shaderProgram) );
-
-    GLCall( glUseProgram(shaderProgram) );
+    
     GLCall( glDeleteShader(vertexShader) );
     GLCall( glDeleteShader(fragmentShader) );
+
+    // Set the texture unit for use in vertex shader
+    glUniform1i(glGetUniformLocation(shaderProgram, "ourTexture"), 0);
 }
 
 void Shader::validateShaderSource(ShaderType type, unsigned int shaderID)
@@ -58,9 +70,4 @@ void Shader::validateShaderSource(ShaderType type, unsigned int shaderID)
     }
     else
         std::clog << "[Shader] Successfully compiled " << typeStr << " shader\n";
-}
-
-unsigned int Shader::uniformLocation(const char* uniformName) const
-{
-    return glGetUniformLocation(shaderProgram, uniformName);
 }

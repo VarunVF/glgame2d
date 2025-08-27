@@ -8,6 +8,7 @@ public:
     Shader(const char* vertexShaderSource, const char* fragmentShaderSource);
 
     unsigned int uniformLocation(const char* uniformName) const;
+    void bind() const;
 
 private:
     void initShaders(const char* vertexShaderSource, const char* fragmentShaderSource);

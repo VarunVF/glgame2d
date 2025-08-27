@@ -43,3 +43,9 @@ Texture::Texture()
     : textureID{ 0 }
 {
 }
+
+void Texture::bind() const
+{
+    GLCall( glActiveTexture(GL_TEXTURE0) );
+    GLCall( glBindTexture(GL_TEXTURE_2D, textureID) );
+}

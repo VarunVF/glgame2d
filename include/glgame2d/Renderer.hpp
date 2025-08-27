@@ -25,9 +25,10 @@ public:
     void clear(const Color& color) const;
 
     void beginScene(const Camera& camera) const;
-    void drawSprite(const Sprite& sprite, const Shader& shader) const;
+    void drawSprite(const Sprite& sprite) const;
 
 private:
+    const Shader& m_Shader;
     const Window& m_Window;
     QuadVAO m_QuadVAO;
     unsigned int m_ModelLoc, m_ViewLoc, m_ProjectionLoc;
