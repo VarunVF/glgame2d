@@ -21,18 +21,16 @@ int main(void)
 	Clock clock{ 120.0f };
 
 	Sprite sprite1 {
-		glm::vec2{ 1.0f, 0.0f },
+		glm::vec2{ 0.0f, 0.0f },
 		glm::vec2{ 64.0f, 64.0f },
 		Texture{ "assets/container.jpg" }
 	};
 
 	Sprite sprite2 {
-		glm::vec2{ 0.0f, 0.0f },
+		glm::vec2{ 64.0f, 0.0f },	
 		glm::vec2{ 64.0f, 64.0f },
 		Texture{ "assets/awesomeface.png" }
 	};
-
-	// camera.scale(1.5f);
 
 	while (!window.shouldClose())
 	{

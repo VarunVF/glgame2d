@@ -47,15 +47,18 @@ void Renderer::beginScene(const Camera &camera) const
 
 void Renderer::drawSprite(const Sprite& sprite) const
 {
-    
     // set per-sprite model uniform
     glm::mat4 model(1.0f);
     int width, height;
     m_Window.getSize(&width, &height);
+    
+    float transX = sprite.position[0] / width * 2;
+    float transY = sprite.position[1] / height * 2;
+    model = glm::translate(model, glm::vec3(transX, transY, 0.0f));
+    
     float scaleX = sprite.size[0] / width * 2;
     float scaleY = sprite.size[1] / height * 2;
     model = glm::scale(model, glm::vec3(scaleX, scaleY, 1.0f));
-    model = glm::translate(model, glm::vec3(sprite.position, 0.0f));
     
     // draw call
     m_Shader.bind();
