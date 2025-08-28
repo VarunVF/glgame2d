@@ -22,6 +22,8 @@ Texture::Texture(const char* assetPath)
         // load fallback 'error' texture
         assetPath = "assets/fallback_texture.png";
         data = stbi_load(assetPath, &width, &height, &nrChannels, 0);
+        if (!data)
+            std::cerr << "[Texture] Failed to load fallback texture: '" << assetPath << "', verify assets path.\n";
     }
     
     GLCall( glGenTextures(1, &textureID) );
