@@ -23,7 +23,7 @@ void Clock::setTargetFPS(float targetFPS)
 float Clock::tick(bool doDelay)
 {
     auto frameTimeUS = std::chrono::duration_cast<std::chrono::microseconds>(now() - m_StartTimePoint);
-    const float desiredFrameTimeUS = 1.0f / m_TargetFPS * 1.0e6;
+    const float desiredFrameTimeUS = 1.0f / m_TargetFPS * 1.0e6f;
 
     float sleepTime = desiredFrameTimeUS - frameTimeUS.count();
     if (doDelay && sleepTime > 0)
@@ -36,7 +36,7 @@ float Clock::tick(bool doDelay)
     }
 
     m_StartTimePoint = now();
-    float deltaTime = frameTimeUS.count() / 1.0e6;
+    float deltaTime = frameTimeUS.count() / 1.0e6f;
     return deltaTime;
 }
 
