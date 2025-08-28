@@ -25,13 +25,17 @@ void Camera::moveEaseTowards(const Sprite& sprite, const Window& window, float e
     int width, height;
     window.getSize(&width, &height);
 
+    // Avoid NaN (size is zero if window is minimized)
+    if (width == 0 || height == 0)
+        return;
+
     // Target the sprite to appear at the center of the screen
     glm::vec2 targetCenter {
         sprite.position.x - width / 2.0f,
         sprite.position.y + height / 2.0f,
     };
 
-    // convert to NDC range
+    // Convert to NDC range
     targetCenter.x /= width  / 2.0f;
     targetCenter.y /= height / 2.0f;
 

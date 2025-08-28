@@ -11,14 +11,14 @@
 
 int main(void)
 {
-	Window window{ 640, 480, "title" };
-	window.disableVSync();
+	Window window{ 640, 480, "title", Window::WindowType::WINDOWED_FULLSCREEN };
+	window.enableVSync();
 
 	Shader shader;
 	Renderer renderer{ shader, window };
 
 	Camera camera;
-	Clock clock{ 120.0f };
+	Clock clock{ 60.0f };
 
 	Sprite sprite1 {
 		glm::vec2{ 0.0f, 0.0f },
@@ -32,13 +32,13 @@ int main(void)
 		Texture{ "assets/awesomeface.png" }
 	};
 
-	camera.setScale(1.5f);
+	// camera.setScale(1.5f);
 	
 	while (!window.shouldClose())
 	{
 		camera.moveEaseTowards(sprite2, window);
 
-		renderer.clear();
+		renderer.clear({ 1.0f, 0.0f, 0.0f, 1.0f });
 
 		renderer.beginScene(camera);
 		renderer.drawSprite(sprite1);
@@ -47,7 +47,7 @@ int main(void)
 		window.swapBuffers();
 		window.pollEvents();
 
-		float deltaTime = clock.tick(true);
+		float deltaTime = clock.tick(false);
 		std::cout << 1.0f / deltaTime << " FPS\n";
 	}
 

@@ -8,7 +8,7 @@
 #include <GLFW/glfw3.h>
 
 
-Window::Window(int width, int height, const char* title)
+Window::Window(int width, int height, const char* title, WindowType type)
 {
 	if (!glfwInit())
 		throw std::runtime_error("[Window] Failed to initalise GLFW");
@@ -18,7 +18,28 @@ Window::Window(int width, int height, const char* title)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	m_Window = glfwCreateWindow(width, height, title, NULL, NULL);
+	// Get monitor resolution for fullscreen window
+	GLFWmonitor* monitor = nullptr;
+	const GLFWvidmode* mode = nullptr;
+	int viewportWidth = 0, viewportHeight = 0;
+	if (type == WindowType::WINDOWED)
+	{
+		viewportWidth = width;
+		viewportHeight = height;
+	}
+	else if (type == WindowType::WINDOWED_FULLSCREEN)
+	{
+		monitor = glfwGetPrimaryMonitor();
+		mode = glfwGetVideoMode(monitor);
+		viewportWidth = mode->width;
+		viewportHeight = mode->height;
+		glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+		glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+		glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+		glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+	}
+
+	m_Window = glfwCreateWindow(viewportWidth, viewportHeight, title, monitor, NULL);
 	if (!m_Window)
 	{
 		glfwDestroyWindow(m_Window);
@@ -38,10 +59,14 @@ Window::Window(int width, int height, const char* title)
 	std::clog << "[Window] OpenGL version: " << glGetString(GL_VERSION) << "\n";
 
 	// Tell OpenGL where it can draw
-	GLCall( glViewport(0, 0, width, height) );
+	GLCall( glViewport(0, 0, viewportWidth, viewportHeight) );
 
 	// Update viewport on window resize
 	glfwSetFramebufferSizeCallback(m_Window, framebufferSizeCallback);
+
+	// Avoid screen tearing in fullscreen modes
+	if (type == WindowType::WINDOWED_FULLSCREEN)
+		enableVSync();
 }
 
 Window::~Window()
@@ -73,6 +98,11 @@ void Window::enableVSync() const
 void Window::disableVSync() const
 {
 	glfwSwapInterval(0);
+}
+
+void Window::maximize()
+{
+	glfwMaximizeWindow(m_Window);
 }
 
 void Window::getSize(int *width, int *height) const

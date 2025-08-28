@@ -6,7 +6,13 @@ struct GLFWwindow;
 class Window
 {
 public:
-	Window(int width, int height, const char* title);
+	enum class WindowType {
+		WINDOWED,
+		WINDOWED_FULLSCREEN,
+	};
+
+public:
+	Window(int width, int height, const char* title, WindowType type = WindowType::WINDOWED);
 	~Window();
 
 	bool shouldClose();
@@ -15,6 +21,8 @@ public:
 
 	void enableVSync() const;
 	void disableVSync() const;
+
+	void maximize();
 
 	void getSize(int* width, int* height) const;
 
