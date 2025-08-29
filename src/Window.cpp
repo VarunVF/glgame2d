@@ -110,6 +110,11 @@ void Window::getSize(int *width, int *height) const
     glfwGetWindowSize(m_Window, width, height);
 }
 
+GLFWwindow *Window::getGLFWWindow() const
+{
+    return m_Window;
+}
+
 void Window::framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
 	GLCall( glViewport(0, 0, width, height) );

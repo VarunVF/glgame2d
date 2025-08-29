@@ -25,6 +25,7 @@ public:
 	void maximize();
 
 	void getSize(int* width, int* height) const;
+	GLFWwindow* getGLFWWindow() const;
 
 private:
 	static void framebufferSizeCallback(GLFWwindow* window, int width, int height);

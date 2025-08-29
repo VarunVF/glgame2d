@@ -27,6 +27,11 @@ FetchContent_MakeAvailable(glfw)
 add_library(glgame2d
 	"src/Camera.cpp"
 	"src/Clock.cpp"
+
+	"src/Input.cpp"
+	"src/Keyboard.cpp"
+	"src/Mouse.cpp"
+
 	"src/QuadVAO.cpp"
 	"src/Renderer.cpp"
 	"src/Shader.cpp"
