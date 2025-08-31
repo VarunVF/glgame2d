@@ -39,6 +39,24 @@ void Renderer::clear(const Color &color) const
     GLCall( glClear(GL_COLOR_BUFFER_BIT) );
 }
 
+void Renderer::setPolygonMode(PolygonMode mode)
+{
+    switch (mode)
+    {
+        case PolygonMode::FILL:
+            GLCall( glPolygonMode(GL_FRONT_AND_BACK, GL_FILL) );
+            break;
+            
+        case PolygonMode::LINE:
+            GLCall( glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) );
+            break;
+
+        case PolygonMode::POINT:
+            GLCall( glPolygonMode(GL_FRONT_AND_BACK, GL_POINT) );
+            break;
+    }
+}
+
 void Renderer::beginScene(const Camera &camera) const
 {
     const auto& view = camera.getViewMatrix();

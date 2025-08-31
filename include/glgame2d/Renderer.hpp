@@ -24,6 +24,13 @@ public:
     void clear() const;
     void clear(const Color& color) const;
 
+    enum PolygonMode {
+        POINT,
+        LINE,
+        FILL
+    };
+    void setPolygonMode(PolygonMode mode);
+
     void beginScene(const Camera& camera) const;
     void drawSprite(const Sprite& sprite) const;
 

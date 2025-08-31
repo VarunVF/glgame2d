@@ -19,6 +19,7 @@ int main(void)
 
 	Shader shader;
 	Renderer renderer{ shader, window };
+	// renderer.setPolygonMode(Renderer::PolygonMode::LINE);
 
 	Camera camera;
 	Clock clock{ 60.0f };
@@ -55,7 +56,7 @@ int main(void)
 
 		camera.moveEaseTowards(sprite2, window);
 
-		renderer.clear({ 1.0f, 0.0f, 0.0f, 1.0f });
+		renderer.clear({ 0.0f, 0.0f, 0.0f, 1.0f });
 		renderer.beginScene(camera);
 		renderer.drawSprite(sprite1);
 		renderer.drawSprite(sprite2);
