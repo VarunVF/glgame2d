@@ -25,13 +25,13 @@ FetchContent_MakeAvailable(glfw)
 
 # Add our source
 add_library(glgame2d
-	"src/Camera.cpp"
-	"src/Clock.cpp"
-
 	"src/Input.cpp"
 	"src/Keyboard.cpp"
 	"src/Mouse.cpp"
 
+	"src/Camera.cpp"
+	"src/Clock.cpp"
+	"src/Mixer.cpp"
 	"src/QuadVAO.cpp"
 	"src/Renderer.cpp"
 	"src/Shader.cpp"
@@ -39,6 +39,7 @@ add_library(glgame2d
 	"src/Texture.cpp"
 	"src/Window.cpp"
 
+	"src/miniaudio.c"
 	"src/stb_image.c"
 	"src/glad.c"
 )

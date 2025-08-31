@@ -9,6 +9,8 @@
 #include <glgame2d/Shader.hpp>
 #include <glgame2d/Renderer.hpp>
 
+#include <glgame2d/Mixer.hpp>
+
 
 int main(void)
 {
@@ -33,6 +35,10 @@ int main(void)
 		glm::vec2{ 64.0f, 64.0f },
 		Texture{ "assets/awesomeface.png" }
 	};
+
+	Mixer mixer;
+	auto music = mixer.load("assets/898361_The-Disturbance.mp3");
+	mixer.play(music);
 	
 	while (!window.shouldClose())
 	{
