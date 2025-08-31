@@ -4,6 +4,9 @@
 #include <glad/glad.h>
 
 
+namespace glgame2d {
+
+
 Shader::Shader()
 {
     initShaders(m_VertexShaderSource, m_FragmentShaderSource);
@@ -71,3 +74,6 @@ void Shader::validateShaderSource(ShaderType type, unsigned int shaderID)
     else
         std::clog << "[Shader] Successfully compiled " << typeStr << " shader\n";
 }
+
+
+} // namespace glgame2d

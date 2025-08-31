@@ -4,6 +4,9 @@
 #include <glad/glad.h>
 
 
+namespace glgame2d {
+
+
 QuadVAO::QuadVAO()
 {
     indicesCount = sizeof(indices) / sizeof(indices[0]);
@@ -31,3 +34,6 @@ QuadVAO::QuadVAO()
     // Unbind our settings
     GLCall( glBindVertexArray(0) );
 }
+
+
+} // namespace glgame2d

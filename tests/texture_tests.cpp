@@ -9,22 +9,22 @@
 
 TEST_CASE("Loading Texture with nonexistent path fails gracefully", "[Texture]")
 {
-	Window window{ 640, 480, "title" };
-	QuadVAO vao;
-	Shader shader;
-	Renderer renderer{ shader, window };
+	glgame2d::Window window{ 640, 480, "title" };
+	glgame2d::QuadVAO vao;
+	glgame2d::Shader shader;
+	glgame2d::Renderer renderer{ shader, window };
 
-    Texture texture{ "this/path/is/invalid" };
+    glgame2d::Texture texture{ "this/path/is/invalid" };
     REQUIRE(texture.textureID != 0);
 }
 
 TEST_CASE("Loading Texture with valid path gives valid texture ID", "[Texture]")
 {
-    Window window{ 640, 480, "title" };
-	QuadVAO vao;
-	Shader shader;
-	Renderer renderer{ shader, window };
+    glgame2d::Window window{ 640, 480, "title" };
+	glgame2d::QuadVAO vao;
+	glgame2d::Shader shader;
+	glgame2d::Renderer renderer{ shader, window };
 
-    Texture texture{ "assets/container.jpg" };
+    glgame2d::Texture texture{ "assets/container.jpg" };
     REQUIRE(texture.textureID != 0);
 }

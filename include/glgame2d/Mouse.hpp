@@ -7,6 +7,9 @@
 #include "glgame2d/Window.hpp"
 
 
+namespace glgame2d {
+
+
 class Mouse
 {
 public:
@@ -44,3 +47,6 @@ private:
     std::bitset<BUTTON_LAST + 1> m_OldButtons;
     std::bitset<BUTTON_LAST + 1> m_NewButtons;
 };
+
+
+} // namespace glgame2d

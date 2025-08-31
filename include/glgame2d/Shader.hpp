@@ -1,6 +1,9 @@
 #pragma once
 
 
+namespace glgame2d {
+
+
 class Shader
 {
 public:
@@ -50,3 +53,6 @@ private:
         "    FragColor = texture(ourTexture, TexCoord);\n"
         "}\n";
 };
+
+
+} // namespace glgame2d

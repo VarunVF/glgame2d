@@ -7,6 +7,9 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
+namespace glgame2d {
+
+
 Renderer::Renderer(const Shader& shader, const Window& window)
     : m_Shader{ shader }, m_Window{ window }, m_QuadVAO{}
 {
@@ -86,3 +89,6 @@ void Renderer::drawSprite(const Sprite& sprite) const
     GLCall( glDrawElements(GL_TRIANGLES, m_QuadVAO.indicesCount, GL_UNSIGNED_INT, 0) );
     GLCall( glBindVertexArray(0) );
 }
+
+
+} // namespace glgame2d

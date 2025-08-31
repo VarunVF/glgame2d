@@ -3,10 +3,13 @@
 struct GLFWwindow;
 
 
+namespace glgame2d {
+
+
 class Window
 {
 public:
-	enum class WindowType {
+	enum WindowType {
 		WINDOWED,
 		WINDOWED_FULLSCREEN,
 	};
@@ -33,3 +36,6 @@ private:
 private:
 	GLFWwindow* m_Window;
 };
+
+
+} // namespace glgame2d

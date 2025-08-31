@@ -3,6 +3,9 @@
 #include <chrono>
 
 
+namespace glgame2d {
+
+
 class Clock
 {
 public:
@@ -53,3 +56,6 @@ private:
     TimePoint m_StartTimePoint;
     float m_TargetFPS;
 };
+
+
+} // namespace glgame2d

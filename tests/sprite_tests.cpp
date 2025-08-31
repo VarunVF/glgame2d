@@ -5,11 +5,11 @@
 
 TEST_CASE("Intersecting Sprites must collide", "[Sprite]")
 {
-    Sprite sprite1 {
+    glgame2d::Sprite sprite1 {
         glm::vec2{ 0.0f, 0.0f },
         glm::vec2{ 16.0f, 16.0f }
     };
-    Sprite sprite2 {
+    glgame2d::Sprite sprite2 {
         glm::vec2{ 5.0f, 0.0f },
         glm::vec2{ 16.0f, 16.0f }
     };
@@ -19,11 +19,11 @@ TEST_CASE("Intersecting Sprites must collide", "[Sprite]")
 
 TEST_CASE("Non-intersecting Sprites must not collide", "[Sprite]")
 {
-    Sprite sprite1 {
+    glgame2d::Sprite sprite1 {
         glm::vec2{ 0.0f, 0.0f },
         glm::vec2{ 16.0f, 16.0f }
     };
-    Sprite sprite2 {
+    glgame2d::Sprite sprite2 {
         glm::vec2{ 32.0f, 0.0f },
         glm::vec2{ 16.0f, 16.0f }
     };

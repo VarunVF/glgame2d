@@ -8,6 +8,9 @@
 #include "glgame2d/GLCall.hpp"
 
 
+namespace glgame2d {
+
+
 Texture::Texture(const char* assetPath)
 {
     int width, height, nrChannels;
@@ -51,3 +54,6 @@ void Texture::bind() const
     GLCall( glActiveTexture(GL_TEXTURE0) );
     GLCall( glBindTexture(GL_TEXTURE_2D, textureID) );
 }
+
+
+} // namespace glgame2d

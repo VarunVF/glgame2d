@@ -4,6 +4,9 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
+namespace glgame2d {
+
+
 Camera::Camera()
     : m_ViewMatrix{ 1.0f }, m_Position{ 0.0f, 0.0f }, m_Scale{ 1.0f }
 {
@@ -54,3 +57,6 @@ const glm::mat4& Camera::getViewMatrix() const
 {
     return m_ViewMatrix;
 }
+
+
+} // namespace glgame2d

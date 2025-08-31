@@ -1,6 +1,9 @@
 #include "glgame2d/Mouse.hpp"
 
 
+namespace glgame2d {
+
+
 Mouse::Mouse()
     : m_OldButtons{}, m_NewButtons{}
 {
@@ -36,3 +39,6 @@ Mouse::Position Mouse::getPosition(const Window& window) const
     glfwGetCursorPos(window.getGLFWWindow(), &position.xpos, &position.ypos);
     return position;
 }
+
+
+} // namespace glgame2d

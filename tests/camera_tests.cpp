@@ -7,7 +7,7 @@
 
 TEST_CASE("Camera performs move transformations correctly", "[Camera]")
 {
-    Camera camera;
+    glgame2d::Camera camera;
     const auto& mat = camera.getViewMatrix();
 
     SECTION("Default camera has identity matrix")

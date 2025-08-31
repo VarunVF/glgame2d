@@ -14,29 +14,29 @@
 
 int main(void)
 {
-	Window window{ 640, 480, "title", Window::WindowType::WINDOWED };
+	glgame2d::Window window{ 640, 480, "title", glgame2d::Window::WINDOWED };
 	window.disableVSync();
 
-	Shader shader;
-	Renderer renderer{ shader, window };
+	glgame2d::Shader shader;
+	glgame2d::Renderer renderer{ shader, window };
 
-	Camera camera;
-	Clock clock{ 60.0f };
-	Input input;
+	glgame2d::Camera camera;
+	glgame2d::Clock clock{ 60.0f };
+	glgame2d::Input input;
 
-	Sprite sprite1 {
+	glgame2d::Sprite sprite1 {
 		glm::vec2{ 0.0f, 0.0f },
 		glm::vec2{ 64.0f, 64.0f },
-		Texture{ "assets/container.jpg" }
+		glgame2d::Texture{ "assets/container.jpg" }
 	};
 
-	Sprite sprite2 {
+	glgame2d::Sprite sprite2 {
 		glm::vec2{ 64.0f, 0.0f },	
 		glm::vec2{ 64.0f, 64.0f },
-		Texture{ "assets/awesomeface.png" }
+		glgame2d::Texture{ "assets/awesomeface.png" }
 	};
 
-	Mixer mixer;
+	glgame2d::Mixer mixer;
 	auto music = mixer.load("assets/898361_The-Disturbance.mp3");
 	mixer.play(music);
 	
@@ -45,11 +45,11 @@ int main(void)
 	while (!window.shouldClose())
 	{
 		input.begin(window);
-		if (input.isJustPressed(Mouse::BUTTON_LEFT))
+		if (input.isJustPressed(glgame2d::Mouse::BUTTON_LEFT))
 			std::cout << "Pressed\n";
-		else if (input.isHeld(Mouse::BUTTON_LEFT))
+		else if (input.isHeld(glgame2d::Mouse::BUTTON_LEFT))
 			std::cout << "Holding\n";
-		else if (input.isJustReleased(Mouse::BUTTON_LEFT))
+		else if (input.isJustReleased(glgame2d::Mouse::BUTTON_LEFT))
 			std::cout << "Released\n";
 
 		camera.moveEaseTowards(sprite2, window);

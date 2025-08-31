@@ -5,6 +5,9 @@
 #include "Texture.hpp"
 
 
+namespace glgame2d {
+
+
 struct Sprite
 {
     glm::vec2 position;
@@ -17,3 +20,6 @@ struct Sprite
 
     bool collides(const Sprite& other) const;
 };
+
+
+} // namespace glgame2d

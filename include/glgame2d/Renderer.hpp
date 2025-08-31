@@ -7,6 +7,9 @@
 #include "Window.hpp"
 
 
+namespace glgame2d {
+
+
 class Renderer
 {
 public:
@@ -40,3 +43,6 @@ private:
     QuadVAO m_QuadVAO;
     unsigned int m_ModelLoc, m_ViewLoc, m_ProjectionLoc;
 };
+
+
+} // namespace glgame2d

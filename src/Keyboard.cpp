@@ -3,6 +3,9 @@
 #include <GLFW/glfw3.h>
 
 
+namespace glgame2d {
+
+
 Keyboard::Keyboard()
     : m_OldKeys{}, m_NewKeys{}
 {
@@ -32,3 +35,6 @@ bool Keyboard::isKeyHeld(Key key)
 {
     return m_NewKeys[key];
 }
+
+
+} // namespace glgame2d

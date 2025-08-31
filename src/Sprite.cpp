@@ -1,6 +1,9 @@
 #include "glgame2d/Sprite.hpp"
 
 
+namespace glgame2d {
+
+
 Sprite::Sprite(const glm::vec2 &position, const glm::vec2 &size, const Texture& texture)
     : position{ position }, size{ size }, texture{ texture }
 {
@@ -31,3 +34,6 @@ bool Sprite::collides(const Sprite &other) const
 
     return overlapX && overlapY;
 }
+
+
+} // namespace glgame2d

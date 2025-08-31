@@ -1,6 +1,9 @@
 #include "glgame2d/Input.hpp"
 
 
+namespace glgame2d {
+
+
 Input::Input()
     : m_Keyboard{}, m_Mouse{}
 {
@@ -46,3 +49,6 @@ Input::MousePosition Input::getMousePosition(const Window& window) const
 {
     return m_Mouse.getPosition(window);
 }
+
+
+} // namespace glgame2d

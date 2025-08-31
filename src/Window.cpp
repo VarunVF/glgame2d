@@ -8,6 +8,9 @@
 #include <GLFW/glfw3.h>
 
 
+namespace glgame2d {
+
+
 Window::Window(int width, int height, const char* title, WindowType type)
 {
 	if (!glfwInit())
@@ -119,3 +122,6 @@ void Window::framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
 	GLCall( glViewport(0, 0, width, height) );
 }
+
+
+} // namespace glgame2d

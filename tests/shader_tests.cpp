@@ -7,14 +7,14 @@
 
 TEST_CASE("Sprite compilation does not cause crashes", "[Sprite]")
 {
-    Window window{ 640, 480, "title" };
-	QuadVAO vao;
-	Shader shader;
-	Renderer renderer{ shader, window };
+    glgame2d::Window window{ 640, 480, "title" };
+	glgame2d::QuadVAO vao;
+	glgame2d::Shader shader;
+	glgame2d::Renderer renderer{ shader, window };
 
     SECTION("Default shader pair compiles without crash")
     {
-        Shader defaultShader;
+        glgame2d::Shader defaultShader;
         REQUIRE( true );
     }
 
@@ -44,7 +44,7 @@ TEST_CASE("Sprite compilation does not cause crashes", "[Sprite]")
             "    FragColor = texture(ourTexture, TexCoord);\n"
             "}\n";
         
-        Shader shader{ vertexSource, fragmentSource };
+        glgame2d::Shader shader{ vertexSource, fragmentSource };
         REQUIRE( true );
     }
 }

@@ -1,6 +1,9 @@
 #pragma once
 
 
+namespace glgame2d {
+
+
 class QuadVAO
 {
 public:
@@ -25,3 +28,6 @@ private:
 		0, 2, 3,
 	};
 };
+
+
+} // namespace glgame2d

@@ -7,6 +7,9 @@
 #include "glgame2d/Window.hpp"
 
 
+namespace glgame2d {
+
+
 class Keyboard
 {
 public:
@@ -151,3 +154,6 @@ private:
     std::bitset<KEY_LAST + 1> m_OldKeys;
     std::bitset<KEY_LAST + 1> m_NewKeys;
 };
+
+
+} // namespace glgame2d

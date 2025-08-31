@@ -5,6 +5,9 @@
 #include "glgame2d/Mouse.hpp"
 
 
+namespace glgame2d {
+
+
 class Input
 {
 public:
@@ -31,3 +34,6 @@ private:
     Keyboard m_Keyboard;
     Mouse m_Mouse;
 };
+
+
+} // namespace glgame2d

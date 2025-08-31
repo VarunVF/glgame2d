@@ -1,6 +1,9 @@
 #pragma once
 
 
+namespace glgame2d {
+
+
 class Texture
 {
 public:
@@ -12,3 +15,6 @@ public:
 public:
     unsigned int textureID;
 };
+
+
+} // namespace glgame2d

@@ -3,6 +3,9 @@
 #include <miniaudio.h>
 
 
+namespace glgame2d {
+
+
 class Mixer
 {
 public:
@@ -23,3 +26,6 @@ public:
 private:
     ma_engine m_Engine;
 };
+
+
+} // namespace glgame2d

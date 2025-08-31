@@ -5,6 +5,9 @@
 #include <miniaudio.h>
 
 
+namespace glgame2d {
+
+
 Mixer::Mixer()
 {
     ma_result result;
@@ -46,3 +49,6 @@ void Mixer::play(const char *soundFile)
     // inline sound: play once, then put up for recycling
     ma_engine_play_sound(&m_Engine, soundFile, NULL);
 }
+
+
+} // namespace glgame2d

@@ -4,6 +4,9 @@
 #include <thread>
 
 
+namespace glgame2d {
+
+
 Clock::Clock(float targetFPS)
     : m_TargetFPS{ targetFPS }
 {
@@ -50,3 +53,6 @@ std::chrono::microseconds Clock::timeSince(const TimePoint &timePoint)
     auto elapsed = now() - timePoint;
     return std::chrono::duration_cast<std::chrono::microseconds>(elapsed);
 }
+
+
+} // namespace glgame2d

@@ -6,6 +6,9 @@
 #include "glgame2d/Window.hpp"
 
 
+namespace glgame2d {
+
+
 class Camera
 {
 public:
@@ -54,3 +57,6 @@ private:
     glm::vec2 m_Position;
     float m_Scale;
 };
+
+
+} // namespace glgame2d
