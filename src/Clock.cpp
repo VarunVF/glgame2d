@@ -22,7 +22,7 @@ void Clock::setTargetFPS(float targetFPS)
 
 float Clock::tick(bool doDelay)
 {
-    auto frameTimeUS = std::chrono::duration_cast<std::chrono::microseconds>(now() - m_StartTimePoint);
+    auto frameTimeUS = timeSince(m_StartTimePoint);
     const float desiredFrameTimeUS = 1.0f / m_TargetFPS * 1.0e6f;
 
     float sleepTime = desiredFrameTimeUS - frameTimeUS.count();
@@ -32,7 +32,7 @@ float Clock::tick(bool doDelay)
         std::this_thread::sleep_for(delay);
 
         // Factor in the delay
-        frameTimeUS = std::chrono::duration_cast<std::chrono::microseconds>(now() - m_StartTimePoint);
+        frameTimeUS = timeSince(m_StartTimePoint);
     }
 
     m_StartTimePoint = now();
@@ -40,7 +40,13 @@ float Clock::tick(bool doDelay)
     return deltaTime;
 }
 
-std::chrono::high_resolution_clock::time_point Clock::now()
+Clock::TimePoint Clock::now()
 {
     return std::chrono::high_resolution_clock::now();
+}
+
+std::chrono::microseconds Clock::timeSince(const TimePoint &timePoint)
+{
+    auto elapsed = now() - timePoint;
+    return std::chrono::duration_cast<std::chrono::microseconds>(elapsed);
 }

@@ -6,6 +6,9 @@
 class Clock
 {
 public:
+    using TimePoint = std::chrono::high_resolution_clock::time_point;
+    
+public:
     Clock(float targetFPS);
 
     /**
@@ -31,10 +34,22 @@ public:
      */
     float tick(bool doDelay = true);
 
-private:
-    static std::chrono::high_resolution_clock::time_point now();
+    /**
+     * @brief Get the current time as a TimePoint.
+     * 
+     * @return TimePoint 
+     */
+    static TimePoint now();
+
+    /**
+     * @brief Get the time elapsed since a TimePoint in microseconds.
+     * 
+     * @param timePoint 
+     * @return std::chrono::microseconds 
+     */
+    static std::chrono::microseconds timeSince(const TimePoint& timePoint);
 
 private:
-    std::chrono::high_resolution_clock::time_point m_StartTimePoint;
+    TimePoint m_StartTimePoint;
     float m_TargetFPS;
 };

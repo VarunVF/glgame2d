@@ -15,11 +15,10 @@
 int main(void)
 {
 	Window window{ 640, 480, "title", Window::WindowType::WINDOWED };
-	window.enableVSync();
+	window.disableVSync();
 
 	Shader shader;
 	Renderer renderer{ shader, window };
-	// renderer.setPolygonMode(Renderer::PolygonMode::LINE);
 
 	Camera camera;
 	Clock clock{ 60.0f };
@@ -41,6 +40,8 @@ int main(void)
 	auto music = mixer.load("assets/898361_The-Disturbance.mp3");
 	mixer.play(music);
 	
+	float deltaTime = 0.0f;
+
 	while (!window.shouldClose())
 	{
 		input.begin(window);
@@ -50,9 +51,6 @@ int main(void)
 			std::cout << "Holding\n";
 		else if (input.isJustReleased(Mouse::BUTTON_LEFT))
 			std::cout << "Released\n";
-			
-		auto mpos = input.getMousePosition(window);
-		std::cout << mpos.xpos << ", " << mpos.ypos << "\n";
 
 		camera.moveEaseTowards(sprite2, window);
 
@@ -64,8 +62,8 @@ int main(void)
 		window.swapBuffers();
 		window.pollEvents();
 
-		float deltaTime = clock.tick(false);
-		// std::cout << 1.0f / deltaTime << " FPS\n";
+		deltaTime = clock.tick(true);
+		std::cout << 1.0f / deltaTime << " FPS\n";
 	}
 
 	return 0;

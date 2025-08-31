@@ -34,6 +34,8 @@ public:
      * @brief Ease the camera towards the given sprite.
      * 
      * @param sprite Sprite to be used as a target for the camera to ease towards.
+     * @param window Window that this camera will use to calculate movement.
+     * @param easing Optional easing speed at which to approach the sprite.
      */
     void moveEaseTowards(const Sprite& sprite, const Window& window, float easing = 30.0f);
 
