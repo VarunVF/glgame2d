@@ -27,6 +27,7 @@ FetchContent_MakeAvailable(glfw)
 add_library(glgame2d
 	"src/Camera.cpp"
 	"src/Clock.cpp"
+	"src/Entity.cpp"
 	"src/Input.cpp"
 	"src/Keyboard.cpp"
 	"src/Mixer.cpp"
