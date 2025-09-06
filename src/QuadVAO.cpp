@@ -25,12 +25,9 @@ QuadVAO::QuadVAO()
     GLCall( glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO) );
     GLCall( glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW) );
 
-    GLCall( glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0) );
+    GLCall( glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0) );
     GLCall( glEnableVertexAttribArray(0) );
-
-    GLCall( glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float))) );
-    GLCall( glEnableVertexAttribArray(1) );
-
+    
     // Unbind our settings
     GLCall( glBindVertexArray(0) );
 }

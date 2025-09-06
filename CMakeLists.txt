@@ -22,6 +22,14 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(glfw)
 
+# Obtain nlohmann_json
+FetchContent_Declare(
+	nlohmann_json
+	GIT_REPOSITORY	https://github.com/nlohmann/json.git
+	GIT_TAG			v3.12.0
+)
+FetchContent_MakeAvailable(nlohmann_json)
+
 
 # Add our source
 add_library(glgame2d
@@ -37,6 +45,7 @@ add_library(glgame2d
 	"src/Shader.cpp"
 	"src/Sprite.cpp"
 	"src/Texture.cpp"
+	"src/Tilemap.cpp"
 	"src/Window.cpp"
 
 	"src/glad/glad.c"
@@ -54,6 +63,7 @@ target_link_libraries(glgame2d PUBLIC
 	${OPENGL_LIBRARIES}
 	glfw
 	glm
+	nlohmann_json
 )
 
 # Build tests

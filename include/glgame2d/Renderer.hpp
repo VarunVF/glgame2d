@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include "Camera.hpp"
 #include "QuadVAO.hpp"
 #include "Shader.hpp"
@@ -35,6 +37,7 @@ public:
     void setPolygonMode(PolygonMode mode);
 
     void beginScene(const Camera& camera) const;
+    void drawSprite(const Sprite& sprite, const glm::vec4& uvRect) const;
     void drawSprite(const Sprite& sprite) const;
 
 private:
@@ -42,6 +45,7 @@ private:
     const Window& m_Window;
     QuadVAO m_QuadVAO;
     unsigned int m_ModelLoc, m_ViewLoc, m_ProjectionLoc;
+    unsigned int m_UVrectLoc;
 };
 
 

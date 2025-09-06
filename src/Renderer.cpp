@@ -23,6 +23,7 @@ Renderer::Renderer(const Shader& shader, const Window& window)
     m_ModelLoc      = shader.uniformLocation("u_Model");
     m_ViewLoc       = shader.uniformLocation("u_View");
     m_ProjectionLoc = shader.uniformLocation("u_Projection");
+    m_UVrectLoc     = shader.uniformLocation("u_UVrect");
     
     // global projection matrix
     glm::mat4 projection(1.0f);
@@ -66,7 +67,7 @@ void Renderer::beginScene(const Camera &camera) const
     GLCall( glUniformMatrix4fv(m_ViewLoc, 1, GL_FALSE, glm::value_ptr(view)) );
 }
 
-void Renderer::drawSprite(const Sprite& sprite) const
+void Renderer::drawSprite(const Sprite& sprite, const glm::vec4& uvRect) const
 {
     // set per-sprite model uniform
     glm::mat4 model(1.0f);
@@ -83,11 +84,17 @@ void Renderer::drawSprite(const Sprite& sprite) const
     
     // draw call
     m_Shader.bind();
+    GLCall( glUniform4f(m_UVrectLoc, uvRect[0], uvRect[1], uvRect[2], uvRect[3]) );
     GLCall( glUniformMatrix4fv(m_ModelLoc, 1, GL_FALSE, glm::value_ptr(model)) );
     sprite.texture.bind();
     GLCall( glBindVertexArray(m_QuadVAO.VAO) );
     GLCall( glDrawElements(GL_TRIANGLES, m_QuadVAO.indicesCount, GL_UNSIGNED_INT, 0) );
     GLCall( glBindVertexArray(0) );
+}
+
+void Renderer::drawSprite(const Sprite &sprite) const
+{
+    drawSprite(sprite, glm::vec4{ 0.0f, 0.0f, 1.0f, 1.0f });
 }
 
 

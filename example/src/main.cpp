@@ -7,9 +7,10 @@
 #include <glgame2d/Entity.hpp>
 #include <glgame2d/Input.hpp>
 #include <glgame2d/Mixer.hpp>
-#include <glgame2d/Window.hpp>
-#include <glgame2d/Shader.hpp>
 #include <glgame2d/Renderer.hpp>
+#include <glgame2d/Shader.hpp>
+#include <glgame2d/Tilemap.hpp>
+#include <glgame2d/Window.hpp>
 
 
 int main(void)
@@ -24,18 +25,6 @@ int main(void)
 	glgame2d::Clock clock{ 60.0f };
 	glgame2d::Input input;
 
-	glgame2d::Sprite sprite1 {
-		glm::vec2{ 0.0f, 0.0f },
-		glm::vec2{ 64.0f, 64.0f },
-		glgame2d::Texture{ "assets/container.jpg" }
-	};
-
-	glgame2d::Sprite sprite2 {
-		glm::vec2{ 64.0f, 0.0f },	
-		glm::vec2{ 64.0f, 64.0f },
-		glgame2d::Texture{ "assets/awesomeface.png" }
-	};
-
 	glgame2d::Entity player {
 		glgame2d::Sprite{
 			glm::vec2{ 64.0f, 0.0f },
@@ -46,7 +35,9 @@ int main(void)
 
 	glgame2d::Mixer mixer;
 	auto music = mixer.load("assets/898361_The-Disturbance.mp3");
-	mixer.play(music);
+	// mixer.play(music);
+
+	glgame2d::Tilemap tilemap{ "assets/map/map.tmj" };
 	
 	float deltaTime = 0.0f;
 
@@ -65,16 +56,12 @@ int main(void)
 		if (input.isHeld(glgame2d::Keyboard::KEY_S))
 			player.move(0.0f, -playerMoveAmount);
 		
-		camera.moveEaseTowards(sprite2, window);
+		camera.moveEaseTowards(player.getSprite(), window);
 
 		renderer.clear({ 0.0f, 0.0f, 0.0f, 1.0f });
 		renderer.beginScene(camera);
-		renderer.drawSprite(sprite1);
-		renderer.drawSprite(sprite2);
+		tilemap.render(renderer);
 		renderer.drawSprite(player.getSprite());
-
-		// if (sprite1.collides(player.getSprite()))
-		// 	std::cout << "collision\n";
 
 		window.swapBuffers();
 		window.pollEvents();

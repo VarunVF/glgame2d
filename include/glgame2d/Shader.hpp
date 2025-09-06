@@ -26,18 +26,18 @@ private:
     const char* m_VertexShaderSource = 
         "#version 330 core\n"
         "layout (location = 0) in vec2 aPos;\n"
-        "layout (location = 1) in vec2 aTexCoord;\n"
         "\n"
         "uniform mat4 u_Model;\n"
         "uniform mat4 u_View;\n"
         "uniform mat4 u_Projection;\n"
+        "uniform vec4 u_UVrect;\n"
         "\n"
         "out vec2 TexCoord;\n"
         "\n"
         "void main()\n"
         "{\n"
         "    gl_Position = u_Projection * u_View * u_Model * vec4(aPos, 0.0, 1.0);\n"
-        "    TexCoord = aTexCoord;\n"
+        "    TexCoord = mix(u_UVrect.xy, u_UVrect.zw, aPos);\n"
         "}\n";
 
     const char* m_FragmentShaderSource =
