@@ -15,23 +15,36 @@ private:
     using TileGID = int;
 
     struct Tileset {
-        Tileset(TileGID firstgid, const std::string& image, int columns,
+        Tileset(TileGID firstgid, const std::string& image, int columns, int rows,
             int imagewidth, int imageheight, int tilecount)
-            : texture{ image.c_str() },
-            firstgid{ firstgid },
+            : firstgid{ firstgid },
+            texture{ image.c_str() },
             image{ image },
-            columns{ columns }, rows{ imageheight / (imagewidth / columns) },
+            columns{ columns }, rows{ rows },
             imagewidth{ imagewidth }, imageheight{ imageheight },
             tilecount{ tilecount }
         {
         }
 
-        Texture texture;
         TileGID firstgid;
+        Texture texture;
         std::string image;
         int columns, rows;
         int imagewidth, imageheight;
         int tilecount;
+    };
+
+    struct TileObject {
+        TileObject(TileGID tilegid, int width, int height, int x, int y)
+            : tilegid{ tilegid },
+            width{ width }, height{ height},
+            x{ x }, y{ y }
+        {
+        }
+
+        TileGID tilegid;
+        int width, height;
+        int x, y;
     };
 
 public:
@@ -51,6 +64,7 @@ public:
     
 private:
     const Tileset& getTilesetByGID(TileGID gid) const;
+    static glm::vec4 computeTileUV(const Tileset& tileset, TileGID gid);
     void renderTileFromTileset(
         const Renderer& renderer, const Tileset& tileset,
         const glm::vec4& uvRect, const glm::vec2& position) const;
@@ -59,9 +73,11 @@ private:
     struct {
         int width, height;
         int tileWidth, tileHeight;
+        int layerCount;
     } m_MapInfo;
     std::vector<Tileset> m_Tilesets;
-    std::vector<std::vector<TileGID>> m_Layers;
+    std::vector<std::vector<TileGID>> m_TileLayers;
+    std::vector<std::vector<TileObject>> m_ObjectLayers;
 };
 
 

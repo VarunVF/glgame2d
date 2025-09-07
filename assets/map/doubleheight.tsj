@@ -1,0 +1,14 @@
+{ "columns":4,
+ "image":"..\/fallback_texture.png",
+ "imageheight":128,
+ "imagewidth":128,
+ "margin":0,
+ "name":"fallback_texture",
+ "spacing":0,
+ "tilecount":8,
+ "tiledversion":"1.11.1-99-gec89c545",
+ "tileheight":64,
+ "tilewidth":32,
+ "type":"tileset",
+ "version":"1.10"
+}
