@@ -27,8 +27,8 @@ int main(void)
 
 	glgame2d::Entity player {
 		glgame2d::Sprite{
-			glm::vec2{ 64.0f, 0.0f },
-			glm::vec2{ 64.0f, 64.0f },
+			glm::vec2{  0.0f,  0.0f },
+			glm::vec2{ 32.0f, 32.0f },
 			glgame2d::Texture{ "assets/awesomeface.png" }
 		}
 	};
@@ -57,6 +57,14 @@ int main(void)
 			player.move(0.0f, -playerMoveAmount);
 		
 		camera.moveEaseTowards(player.getSprite(), window);
+
+		// collision detection
+		const auto& physicsTiles = tilemap.physicsSpritesAround(player);
+		for (const auto& sprite : physicsTiles)
+		{
+			if (player.collides(sprite))
+				std::cout << "collision\n";
+		}
 
 		renderer.clear({ 0.0f, 0.0f, 0.0f, 1.0f });
 		renderer.beginScene(camera);

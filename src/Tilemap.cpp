@@ -14,8 +14,16 @@ namespace glgame2d {
 
 
 Tilemap::Tilemap(const char* tilemapPath)
-    : m_MapInfo{}, m_TileLayers{}
+    : m_MapInfo{},
+    m_Tilesets{}, m_TileLayers{}, m_ObjectLayers{},
+    m_Rects{}, m_Neighbours{{
+        {-1,  1}, {0,  1}, {1,  1},
+		{-1,  0}, {0,  0}, {1,  0},
+		{-1, -1}, {0, -1}, {1, -1},
+    }}
 {
+    assert(m_Neighbours.size() == TILES_AROUND_COUNT);
+
     // Assume the following when loading:
     // - index in j["layers"] array == Z index of that layer
 
@@ -91,6 +99,26 @@ Tilemap::Tilemap(const char* tilemapPath)
     auto compareTilesets = [](const Tileset& lhs, const Tileset& rhs)
                            { return lhs.firstgid < rhs.firstgid; };
     std::sort(m_Tilesets.begin(), m_Tilesets.end(), compareTilesets);
+
+    // load rects
+    for (const auto& tileLayer : m_TileLayers)
+    {
+        for (int i = 0; i < tileLayer.size(); i++)
+        {
+            TileGID gid = tileLayer[i];
+            if (gid == 0) continue;
+            const Tileset& tileset = getTilesetByGID(gid);
+            Position position {
+                i % m_MapInfo.width *  m_MapInfo.tileWidth,
+                i / m_MapInfo.width * -m_MapInfo.tileHeight
+            };
+            Size size {
+                tileset.imagewidth  / tileset.columns,
+                tileset.imageheight / tileset.rows
+            };
+            m_Rects.emplace(position, size);
+        }
+    }
 }
 
 const Tilemap::Tileset& Tilemap::getTilesetByGID(TileGID gid) const
@@ -132,7 +160,7 @@ glm::vec4 Tilemap::computeTileUV(const Tileset& tileset, TileGID gid)
     };
 }
 
-void glgame2d::Tilemap::renderTileFromTileset(
+void Tilemap::renderTileFromTileset(
     const Renderer& renderer, const Tileset& tileset,
     const glm::vec4& uvRect, const glm::vec2& position) const
 {
@@ -179,5 +207,57 @@ void Tilemap::render(const Renderer& renderer) const
         }
     }
 }
+
+Tilemap::PosList Tilemap::tilesAround(const Entity& entity) const
+{
+	PosList tiles{};
+	assert(tiles.items.size() == TILES_AROUND_COUNT);
+
+	Position tileLoc{
+		static_cast<int>(entity.x()) / m_MapInfo.tileWidth,
+		static_cast<int>(entity.y()) / m_MapInfo.tileHeight
+	};
+	
+	for (const auto& offset : m_Neighbours)
+	{
+		Position checkLoc = {
+			(tileLoc.x + offset.x) * m_MapInfo.tileWidth,
+			(tileLoc.y + offset.y) * m_MapInfo.tileHeight
+		};
+
+		if (m_Rects.find(checkLoc) != m_Rects.end())
+			tiles.items[tiles.count++] = checkLoc;
+	}
+
+	assert(tiles.count <= TILES_AROUND_COUNT);
+	return tiles;
+}
+
+Tilemap::SpriteList Tilemap::physicsSpritesAround(const Entity& entity) const
+{
+	SpriteList sprites{};
+	assert(sprites.items.size() == TILES_AROUND_COUNT);
+
+	PosList positions = tilesAround(entity);
+	assert(positions.items.size() == TILES_AROUND_COUNT);
+
+	for (int i = 0; i < positions.count; ++i)
+	{
+		// At this point we know the key exists in the map
+		const Position& currentPos = positions.items[i];
+        const Size& size = m_Rects.at(currentPos);
+
+        sprites.items[i] = Sprite{
+            glm::vec2{ currentPos.x, currentPos.y },
+            glm::vec2{ size.w, size.h }
+        };
+	}
+
+	sprites.count = positions.count;
+
+	assert(sprites.count <= TILES_AROUND_COUNT);
+	return sprites;
+}
+
 
 } // namespace glgame2d

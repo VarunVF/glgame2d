@@ -1,9 +1,13 @@
 #pragma once
 
+#include <array>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
+#include "glgame2d/Entity.hpp"
 #include "glgame2d/Renderer.hpp"
+#include "glgame2d/Sprite.hpp"
 
 
 namespace glgame2d {
@@ -47,6 +51,67 @@ private:
         int x, y;
     };
 
+private:
+    struct Size {
+        int w = 0;
+        int h = 0;
+    };
+
+    struct Position
+	{
+    public:
+        Position(int x, int y)
+            : x{ x }, y{ y }
+        {
+        }
+
+        Position()
+            : x{ 0 }, y{ 0 }
+        {
+        }
+
+	public:
+		struct Hasher
+		{
+			std::size_t operator()(const Position& pos) const
+			{
+				std::size_t h1 = std::hash<int>{}(pos.x);
+				std::size_t h2 = std::hash<int>{}(pos.y);
+				return h1 ^ (h2 << 1);
+			}
+		};
+
+		struct Equality
+		{
+			bool operator()(const Position& left, const Position& right) const
+			{
+				return left.x == right.x && left.y == right.y;
+			}
+		};
+
+	public:
+		int x = 0;
+		int y = 0;
+	};
+
+
+    template<typename T, std::size_t N>
+    struct FixedList
+    {
+        const T* begin() const { return items.begin(); }
+        const T* end() const { return items.begin() + count; }
+        
+        T* begin() { return items.begin(); }
+        T* end() { return items.begin() + count; }
+
+		std::array<T, N> items = {};
+		std::size_t count = 0;
+    };
+
+    static constexpr int TILES_AROUND_COUNT = 9;
+    using SpriteList = FixedList<Sprite, TILES_AROUND_COUNT>;
+    using PosList = FixedList<Position, TILES_AROUND_COUNT>;
+
 public:
     /**
      * @brief Construct a new Tilemap object by loading a tilemap created with Tiled Map Editor.
@@ -61,6 +126,23 @@ public:
      * @param renderer Renderer to use for rendering
      */
     void render(const Renderer& renderer) const;
+
+    /**
+     * @brief Find all the tile positions around an entity, based on the tilemap's size.
+     * This includes tile positions that may not actually contain a tile.
+     * 
+     * @param entity Entity around which to find tile locations
+     * @return PosList
+     */
+	PosList tilesAround(const Entity& entity) const;
+
+    /**
+     * @brief Find all the physical tiles that exist around an entity
+     * 
+     * @param entity Entity around which to find physics tiles
+     * @return SpriteList of the physics tiles found
+     */
+	SpriteList physicsSpritesAround(const Entity& entity) const;
     
 private:
     const Tileset& getTilesetByGID(TileGID gid) const;
@@ -71,13 +153,17 @@ private:
 
 private:
     struct {
-        int width, height;
-        int tileWidth, tileHeight;
-        int layerCount;
+        int width = 0, height = 0;
+        int tileWidth = 0, tileHeight = 0;
+        int layerCount = 0;
     } m_MapInfo;
+
     std::vector<Tileset> m_Tilesets;
     std::vector<std::vector<TileGID>> m_TileLayers;
     std::vector<std::vector<TileObject>> m_ObjectLayers;
+
+    std::unordered_map<Position, Size, Position::Hasher, Position::Equality> m_Rects;
+    std::array<Position, TILES_AROUND_COUNT> m_Neighbours;
 };
 
 

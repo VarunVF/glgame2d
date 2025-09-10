@@ -13,6 +13,12 @@ public:
     virtual ~Entity() = default;
 
     void move(float dx, float dy);
+    
+    const float& x() const;
+    const float& y() const;
+
+    bool collides(const Entity& other) const;
+    bool collides(const Sprite& sprite) const;
 
     const Sprite& getSprite() const;
     Sprite& getSprite();
