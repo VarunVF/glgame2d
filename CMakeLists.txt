@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.11)
 project(glgame2d)
 
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 include(FetchContent)
 
 # Obtain GLM
@@ -51,7 +54,7 @@ add_library(glgame2d
 	"src/glad/glad.c"
 	"src/miniaudio/miniaudio.c"
 	"src/stb/stb_image.c"
-)
+ )
 target_include_directories(glgame2d PUBLIC
 	"include/"
 	${OPENGL_INCLUDE_DIR}

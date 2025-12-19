@@ -19,21 +19,17 @@ Sprite::Sprite()
 {
 }
 
+Rect Sprite::toRect() const
+{
+    return Rect{
+        position.x, position.y,
+        size.x, size.y
+    };
+}
+
 bool Sprite::collides(const Sprite &other) const
 {
-    // Sign convention: Taking upwards and rightwards as positive
-
-    // Sanity check dimensions
-    assert(size.x > 0 && size.y > 0);
-    assert(other.size.x > 0 && other.size.y > 0);
-
-    bool overlapX = position.x < other.position.x + other.size.x    // this left bound < other right bound
-                 && position.x + size.x > other.position.x;         // this right bound > other left bound
-
-    bool overlapY = position.y > other.position.y - other.size.y    // this top bound > other bottom bound (above)
-                 && position.y - size.y < other.position.y;         // this bottom bound < other top bound (below)
-
-    return overlapX && overlapY;
+    return toRect().collides(other.toRect());
 }
 
 

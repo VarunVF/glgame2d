@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "glgame2d/Entity.hpp"
+#include "glgame2d/Rect.hpp"
 #include "glgame2d/Renderer.hpp"
 #include "glgame2d/Sprite.hpp"
 
@@ -98,11 +98,11 @@ private:
     template<typename T, std::size_t N>
     struct FixedList
     {
-        const T* begin() const { return items.begin(); }
-        const T* end() const { return items.begin() + count; }
+        const auto begin() const { return items.begin(); }
+        const auto end() const { return items.begin() + count; }
         
-        T* begin() { return items.begin(); }
-        T* end() { return items.begin() + count; }
+        auto begin() { return items.begin(); }
+        auto end() { return items.begin() + count; }
 
 		std::array<T, N> items = {};
 		std::size_t count = 0;
@@ -128,22 +128,32 @@ public:
     void render(const Renderer& renderer) const;
 
     /**
-     * @brief Find all the tile positions around an entity, based on the tilemap's size.
+     * @brief Find all the tile positions around a rectangle, based on the tilemap's size.
      * This includes tile positions that may not actually contain a tile.
      * 
-     * @param entity Entity around which to find tile locations
+     * @param rect Rectangle around which to find tile locations
      * @return PosList
      */
-	PosList tilesAround(const Entity& entity) const;
+    PosList tilesAround(const Rect& rect) const;
 
     /**
-     * @brief Find all the physical tiles that exist around an entity
+     * @brief Find all the physical tiles that exist around a rectangle
      * 
-     * @param entity Entity around which to find physics tiles
+     * @param rect Rectangle around which to find physics tiles
      * @return SpriteList of the physics tiles found
      */
-	SpriteList physicsSpritesAround(const Entity& entity) const;
-    
+	SpriteList physicsSpritesAround(const Rect& rect) const;
+
+    /**
+     * @brief Get the mapping of positions to sizes
+     */
+    const std::unordered_map<
+        Position,
+        Size,
+        Position::Hasher,
+        Position::Equality >&
+    getRects() const;
+
 private:
     const Tileset& getTilesetByGID(TileGID gid) const;
     static glm::vec4 computeTileUV(const Tileset& tileset, TileGID gid);

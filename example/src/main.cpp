@@ -25,7 +25,7 @@ int main(void)
 	glgame2d::Clock clock{ 60.0f };
 	glgame2d::Input input;
 
-	glgame2d::Entity player {
+	glgame2d::Entity player{
 		glgame2d::Sprite{
 			glm::vec2{  0.0f,  0.0f },
 			glm::vec2{ 32.0f, 32.0f },
@@ -38,33 +38,35 @@ int main(void)
 	// mixer.play(music);
 
 	glgame2d::Tilemap tilemap{ "assets/map/map.tmj" };
-	
+
 	float deltaTime = 0.0f;
 
 	while (!window.shouldClose())
 	{
-		constexpr float PLAYER_MOVE_SENSITIVITY = 120.0f;
-		float playerMoveAmount = PLAYER_MOVE_SENSITIVITY * deltaTime;
+		constexpr float PLAYER_MOVE_SPEED = 300.0f;
 
+		glm::vec2 movement{};
 		input.begin(window);
 		if (input.isHeld(glgame2d::Keyboard::KEY_D))
-			player.move( playerMoveAmount, 0.0f);
+			movement.x += PLAYER_MOVE_SPEED;
 		if (input.isHeld(glgame2d::Keyboard::KEY_A))
-			player.move(-playerMoveAmount, 0.0f);
+			movement.x -= PLAYER_MOVE_SPEED;
 		if (input.isHeld(glgame2d::Keyboard::KEY_W))
-			player.move(0.0f,  playerMoveAmount);
+			movement.y += PLAYER_MOVE_SPEED;
 		if (input.isHeld(glgame2d::Keyboard::KEY_S))
-			player.move(0.0f, -playerMoveAmount);
-		
+			movement.y -= PLAYER_MOVE_SPEED;
+
 		camera.moveEaseTowards(player.getSprite(), window);
 
 		// collision detection
-		const auto& physicsTiles = tilemap.physicsSpritesAround(player);
+		const auto& physicsTiles = tilemap.physicsSpritesAround(player.getSprite().toRect());
 		for (const auto& sprite : physicsTiles)
 		{
 			if (player.collides(sprite))
 				std::cout << "collision\n";
 		}
+
+		player.update(deltaTime, tilemap, movement);
 
 		renderer.clear({ 0.0f, 0.0f, 0.0f, 1.0f });
 		renderer.beginScene(camera);
