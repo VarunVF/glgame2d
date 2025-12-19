@@ -30,6 +30,16 @@ Tilemap::Tilemap(const char* tilemapPath)
     namespace fs = std::filesystem;
 
     std::ifstream stream{ tilemapPath };
+    if (stream.is_open())
+    {
+        std::clog << "[Tilemap] Loaded tilemap from '" << tilemapPath << "'\n";
+    }
+    else
+    {
+        std::cerr << "[Tilemap] Failed to load tilemap from '" << tilemapPath << "'\n";
+        return;
+    }
+
     nlohmann::json j = nlohmann::json::parse(stream);
 
     // load map info
@@ -57,7 +67,7 @@ Tilemap::Tilemap(const char* tilemapPath)
         float tilesetTileHeight = tilesetInfoJson["tileheight"];
         m_Tilesets.emplace_back(
             firstgid,
-            imagePath,
+            imagePath.string(),
             tilesetInfoJson["columns"],
             tilesetImageHeight / tilesetTileHeight,
             tilesetInfoJson["imagewidth"],
@@ -121,6 +131,102 @@ Tilemap::Tilemap(const char* tilemapPath)
     }
 }
 
+void Tilemap::render(const Renderer& renderer) const
+{
+    for (int i = 0; i < m_MapInfo.layerCount; i++)
+    {
+        const auto& objectLayer = m_ObjectLayers[i];
+        for (const auto& object : objectLayer)
+        {
+            const Tileset& tileset = getTilesetByGID(object.tilegid);
+            glm::vec4 uvRect{ computeTileUV(tileset, object.tilegid) };
+            glm::vec2 position{
+                object.x,
+                -(object.y - object.height)
+            };
+            renderTileFromTileset(renderer, tileset, uvRect, position);
+        }
+
+        const auto& tileLayer = m_TileLayers[i];
+        for (int dataIdx = 0; dataIdx < tileLayer.size(); dataIdx++)
+        {
+            TileGID gid = tileLayer[dataIdx];
+            if (gid == 0) continue; // no tile present
+
+            const auto& tileset = getTilesetByGID(gid);
+            glm::vec4 uvRect{ computeTileUV(tileset, gid) };
+            glm::vec2 position{
+                dataIdx % m_MapInfo.width *  m_MapInfo.tileWidth,
+                dataIdx / m_MapInfo.width * -m_MapInfo.tileHeight
+            };
+
+            renderTileFromTileset(renderer, tileset, uvRect, position);
+        }
+    }
+}
+
+Tilemap::PosList Tilemap::tilesAround(const Rect& rect) const
+{
+    PosList tiles{};
+    assert(tiles.items.size() == TILES_AROUND_COUNT);
+
+    Position tileLoc{
+        static_cast<int>(rect.x) / m_MapInfo.tileWidth,
+        static_cast<int>(rect.y) / m_MapInfo.tileHeight
+    };
+
+    for (const auto& offset : m_Neighbours)
+    {
+        Position checkLoc = {
+            (tileLoc.x + offset.x) * m_MapInfo.tileWidth,
+            (tileLoc.y + offset.y) * m_MapInfo.tileHeight
+        };
+
+        if (m_Rects.find(checkLoc) != m_Rects.end())
+            tiles.items[tiles.count++] = checkLoc;
+    }
+
+    assert(tiles.count <= TILES_AROUND_COUNT);
+    return tiles;
+}
+
+Tilemap::SpriteList Tilemap::physicsSpritesAround(const Rect& rect) const
+{
+    SpriteList sprites{};
+    assert(sprites.items.size() == TILES_AROUND_COUNT);
+
+    PosList positions = tilesAround(rect);
+    assert(positions.items.size() == TILES_AROUND_COUNT);
+
+    for (int i = 0; i < positions.count; ++i)
+    {
+        // At this point we know the key exists in the map
+        const Position& currentPos = positions.items[i];
+        const Size& size = m_Rects.at(currentPos);
+
+        sprites.items[i] = Sprite{
+            glm::vec2{ currentPos.x, currentPos.y },
+            glm::vec2{ size.w, size.h }
+        };
+    }
+
+    sprites.count = positions.count;
+
+    assert(sprites.count <= TILES_AROUND_COUNT);
+    return sprites;
+}
+
+const std::unordered_map<
+    Tilemap::Position,
+    Tilemap::Size,
+    Tilemap::Position::Hasher,
+    Tilemap::Position::Equality >&
+    glgame2d::Tilemap::getRects() const
+{
+    return m_Rects;
+}
+
+
 const Tilemap::Tileset& Tilemap::getTilesetByGID(TileGID gid) const
 {
     assert(!m_Tilesets.empty());
@@ -172,91 +278,6 @@ void Tilemap::renderTileFromTileset(
     Sprite sprite{ position, size, tileset.texture };
     
     renderer.drawSprite(sprite, uvRect);
-}
-
-void Tilemap::render(const Renderer& renderer) const
-{
-    for (int i = 0; i < m_MapInfo.layerCount; i++)
-    {
-        const auto& objectLayer = m_ObjectLayers[i];
-        for (const auto& object : objectLayer)
-        {
-            const Tileset& tileset = getTilesetByGID(object.tilegid);
-            glm::vec4 uvRect{ computeTileUV(tileset, object.tilegid) };
-            glm::vec2 position{
-                object.x,
-                -(object.y - object.height)
-            };
-            renderTileFromTileset(renderer, tileset, uvRect, position);
-        }
-
-        const auto& tileLayer = m_TileLayers[i];
-        for (int dataIdx = 0; dataIdx < tileLayer.size(); dataIdx++)
-        {
-            TileGID gid = tileLayer[dataIdx];
-            if (gid == 0) continue; // no tile present
-
-            const auto& tileset = getTilesetByGID(gid);
-            glm::vec4 uvRect{ computeTileUV(tileset, gid) };
-            glm::vec2 position{
-                dataIdx % m_MapInfo.width *  m_MapInfo.tileWidth,
-                dataIdx / m_MapInfo.width * -m_MapInfo.tileHeight
-            };
-
-            renderTileFromTileset(renderer, tileset, uvRect, position);
-        }
-    }
-}
-
-Tilemap::PosList Tilemap::tilesAround(const Entity& entity) const
-{
-	PosList tiles{};
-	assert(tiles.items.size() == TILES_AROUND_COUNT);
-
-	Position tileLoc{
-		static_cast<int>(entity.x()) / m_MapInfo.tileWidth,
-		static_cast<int>(entity.y()) / m_MapInfo.tileHeight
-	};
-	
-	for (const auto& offset : m_Neighbours)
-	{
-		Position checkLoc = {
-			(tileLoc.x + offset.x) * m_MapInfo.tileWidth,
-			(tileLoc.y + offset.y) * m_MapInfo.tileHeight
-		};
-
-		if (m_Rects.find(checkLoc) != m_Rects.end())
-			tiles.items[tiles.count++] = checkLoc;
-	}
-
-	assert(tiles.count <= TILES_AROUND_COUNT);
-	return tiles;
-}
-
-Tilemap::SpriteList Tilemap::physicsSpritesAround(const Entity& entity) const
-{
-	SpriteList sprites{};
-	assert(sprites.items.size() == TILES_AROUND_COUNT);
-
-	PosList positions = tilesAround(entity);
-	assert(positions.items.size() == TILES_AROUND_COUNT);
-
-	for (int i = 0; i < positions.count; ++i)
-	{
-		// At this point we know the key exists in the map
-		const Position& currentPos = positions.items[i];
-        const Size& size = m_Rects.at(currentPos);
-
-        sprites.items[i] = Sprite{
-            glm::vec2{ currentPos.x, currentPos.y },
-            glm::vec2{ size.w, size.h }
-        };
-	}
-
-	sprites.count = positions.count;
-
-	assert(sprites.count <= TILES_AROUND_COUNT);
-	return sprites;
 }
 
 
