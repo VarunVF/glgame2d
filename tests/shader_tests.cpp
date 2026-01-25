@@ -1,6 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include <glgame2d/QuadVAO.hpp>
 #include <glgame2d/Renderer.hpp>
 #include <glgame2d/Shader.hpp>
 
@@ -8,13 +7,11 @@
 TEST_CASE("Sprite compilation does not cause crashes", "[Sprite]")
 {
     glgame2d::Window window{ 640, 480, "title" };
-	glgame2d::QuadVAO vao;
-	glgame2d::Shader shader;
-	glgame2d::Renderer renderer{ shader, window };
+	glgame2d::Renderer renderer{};
 
-    SECTION("Default shader pair compiles without crash")
+    SECTION("Renderer shader pair compiles without crash")
     {
-        glgame2d::Shader defaultShader;
+        glgame2d::Renderer renderer{};
         REQUIRE( true );
     }
 
@@ -22,13 +19,13 @@ TEST_CASE("Sprite compilation does not cause crashes", "[Sprite]")
     {
         const char* vertexSource = 
             "#version 330 core\n"
-            "layout (location = 0) in vec2 aPos;\n"
-            "layout (location = 1) in vec2 aTexCoord;\n"
+            "layout (location = 0) in vec2 a_Pos;\n"
+            "layout (location = 1) in vec2 a_TexCoord;\n"
             "\n"    // missing uniform declarations
             "void main()\n"
             "{\n"
-            "    gl_Position = u_Projection * u_View * u_Model * vec4(aPos, 0.0, 1.0);\n"
-            "    TexCoord = aTexCoord;\n"
+            "    gl_Position = u_Projection * u_View * u_Model * vec4(a_Pos, 0.0, 1.0);\n"
+            "    TexCoord = a_TexCoord;\n"
             "}\n";
 
         const char* fragmentSource =
@@ -37,11 +34,11 @@ TEST_CASE("Sprite compilation does not cause crashes", "[Sprite]")
             "\n"
             "in vec2 TexCoord;\n"
             "\n"
-            "uniform sampler2D ourTexture;\n"
+            "uniform sampler2D u_Texture;\n"
             "\n"
             "void main()\n"
             "{\n"
-            "    FragColor = texture(ourTexture, TexCoord);\n"
+            "    FragColor = texture(u_Texture, TexCoord);\n"
             "}\n";
         
         glgame2d::Shader shader{ vertexSource, fragmentSource };

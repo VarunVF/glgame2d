@@ -39,6 +39,7 @@ add_library(glgame2d
 	"src/Camera.cpp"
 	"src/Clock.cpp"
 	"src/Entity.cpp"
+	"src/Font.cpp"
 	"src/Input.cpp"
 	"src/Keyboard.cpp"
 	"src/Mixer.cpp"
@@ -54,6 +55,7 @@ add_library(glgame2d
 	"src/glad/glad.c"
 	"src/miniaudio/miniaudio.c"
 	"src/stb/stb_image.c"
+	"src/stb/stb_truetype.c"
  )
 target_include_directories(glgame2d PUBLIC
 	"include/"
@@ -72,5 +74,5 @@ target_link_libraries(glgame2d PUBLIC
 # Build tests
 add_subdirectory("tests/")
 
-# Build example project
-add_subdirectory("example/")
+# Build example projects
+add_subdirectory("examples/")

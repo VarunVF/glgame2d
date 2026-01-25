@@ -6,6 +6,7 @@
 #include <stb_image.h>
 
 #include "glgame2d/GLCall.hpp"
+#include "glgame2d/ensureContextOrAbort.hpp"
 
 
 namespace glgame2d {
@@ -14,6 +15,8 @@ namespace glgame2d {
 Texture::Texture(const char* assetPath)
     : textureID{ 0 }
 {
+    ensureContextOrAbort();
+
     int width, height, nrChannels;
     stbi_set_flip_vertically_on_load(true);
     unsigned char *data = stbi_load(assetPath, &width, &height, &nrChannels, 0); 
@@ -62,6 +65,11 @@ Texture::Texture(const char* assetPath)
 
         std::clog << "[Texture] Loaded '" << assetPath << "' with " << nrChannels << " color channels\n";
     }
+}
+
+Texture::Texture(unsigned int textureID)
+    : textureID{ textureID }
+{
 }
 
 Texture::Texture()

@@ -1,5 +1,6 @@
 #include "glgame2d/Shader.hpp"
 #include "glgame2d/GLCall.hpp"
+#include "glgame2d/ensureContextOrAbort.hpp"
 
 #include <glad/glad.h>
 
@@ -7,14 +8,34 @@
 namespace glgame2d {
 
 
-Shader::Shader()
-{
-    initShaders(m_VertexShaderSource, m_FragmentShaderSource);
-}
-
 Shader::Shader(const char* vertexShaderSource, const char* fragmentShaderSource)
 {
-    initShaders(vertexShaderSource, fragmentShaderSource);
+    ensureContextOrAbort();
+
+    unsigned int vertexShader;
+    GLCall(vertexShader = glCreateShader(GL_VERTEX_SHADER));
+    GLCall(glShaderSource(vertexShader, 1, &vertexShaderSource, nullptr));
+    GLCall(glCompileShader(vertexShader));
+    bool hasVertexShaderCompiled = validateShaderSource(ShaderType::VERTEX, vertexShader);
+
+    unsigned int fragmentShader;
+    GLCall(fragmentShader = glCreateShader(GL_FRAGMENT_SHADER));
+    GLCall(glShaderSource(fragmentShader, 1, &fragmentShaderSource, nullptr));
+    GLCall(glCompileShader(fragmentShader));
+    bool hasFragmentShaderCompiled = validateShaderSource(ShaderType::FRAGMENT, fragmentShader);
+
+    if (!hasVertexShaderCompiled || !hasFragmentShaderCompiled) {
+        return;
+    }
+
+    GLCall(shaderProgram = glCreateProgram());
+    GLCall(glAttachShader(shaderProgram, vertexShader));
+    GLCall(glAttachShader(shaderProgram, fragmentShader));
+    GLCall(glLinkProgram(shaderProgram));
+    GLCall(glValidateProgram(shaderProgram));
+
+    GLCall(glDeleteShader(vertexShader));
+    GLCall(glDeleteShader(fragmentShader));
 }
 
 unsigned int Shader::uniformLocation(const char* uniformName) const
@@ -24,37 +45,10 @@ unsigned int Shader::uniformLocation(const char* uniformName) const
 
 void Shader::bind() const
 {
-    glUseProgram(shaderProgram);
+    GLCall( glUseProgram(shaderProgram) );
 }
 
-void Shader::initShaders(const char* vertexShaderSource, const char* fragmentShaderSource)
-{
-    unsigned int vertexShader;
-    GLCall( vertexShader = glCreateShader(GL_VERTEX_SHADER) );
-    GLCall( glShaderSource(vertexShader, 1, &m_VertexShaderSource, nullptr) );
-    GLCall( glCompileShader(vertexShader) );
-    validateShaderSource(ShaderType::VERTEX, vertexShader);
-
-    unsigned int fragmentShader;
-    GLCall( fragmentShader = glCreateShader(GL_FRAGMENT_SHADER) );
-    GLCall( glShaderSource(fragmentShader, 1, &m_FragmentShaderSource, nullptr) );
-    GLCall( glCompileShader(fragmentShader) );
-    validateShaderSource(ShaderType::FRAGMENT, fragmentShader);
-    
-    GLCall( shaderProgram = glCreateProgram() );
-    GLCall( glAttachShader(shaderProgram, vertexShader) );
-    GLCall( glAttachShader(shaderProgram, fragmentShader) );
-    GLCall( glLinkProgram(shaderProgram) );
-    GLCall( glValidateProgram(shaderProgram) );
-    
-    GLCall( glDeleteShader(vertexShader) );
-    GLCall( glDeleteShader(fragmentShader) );
-
-    // Set the texture unit for use in vertex shader
-    glUniform1i(glGetUniformLocation(shaderProgram, "ourTexture"), 0);
-}
-
-void Shader::validateShaderSource(ShaderType type, unsigned int shaderID)
+bool Shader::validateShaderSource(ShaderType type, unsigned int shaderID)
 {
     // Error detection
     int result;
@@ -68,11 +62,15 @@ void Shader::validateShaderSource(ShaderType type, unsigned int shaderID)
         char* message = (char*)alloca(length * sizeof(char));
         glGetShaderInfoLog(shaderID, length, &length, message);
 
-        std::cerr << "[Shader] Failed to compile " << typeStr << " shader! " << message << "\n";
+        std::cerr << "[Shader] Failed to compile " << typeStr << " shader!\n" << message << "\n";
         glDeleteShader(shaderID);
+        return false;
     }
     else
+    {
         std::clog << "[Shader] Successfully compiled " << typeStr << " shader\n";
+        return true;
+    }
 }
 
 

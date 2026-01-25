@@ -8,6 +8,7 @@
 #include "glgame2d/Rect.hpp"
 #include "glgame2d/Renderer.hpp"
 #include "glgame2d/Sprite.hpp"
+#include "glgame2d/Window.hpp"
 
 
 namespace glgame2d {
@@ -125,7 +126,7 @@ public:
      * 
      * @param renderer Renderer to use for rendering
      */
-    void render(const Renderer& renderer) const;
+    void render(const Renderer& renderer, const Window& window) const;
 
     /**
      * @brief Find all the tile positions around a rectangle, based on the tilemap's size.
@@ -158,14 +159,14 @@ private:
     const Tileset& getTilesetByGID(TileGID gid) const;
     static glm::vec4 computeTileUV(const Tileset& tileset, TileGID gid);
     void renderTileFromTileset(
-        const Renderer& renderer, const Tileset& tileset,
+        const Renderer& renderer, const Window& window, const Tileset& tileset,
         const glm::vec4& uvRect, const glm::vec2& position) const;
 
 private:
     struct {
         int width = 0, height = 0;
         int tileWidth = 0, tileHeight = 0;
-        int layerCount = 0;
+        size_t layerCount = 0;
     } m_MapInfo;
 
     std::vector<Tileset> m_Tilesets;

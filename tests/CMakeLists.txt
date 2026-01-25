@@ -22,6 +22,7 @@ add_executable(glgame2d_tests
     "shader_tests.cpp"
     "sprite_tests.cpp"
     "texture_tests.cpp"
+    "font_tests.cpp"
 )
 
 target_link_libraries(glgame2d_tests PRIVATE

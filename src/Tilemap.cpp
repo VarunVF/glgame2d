@@ -69,7 +69,7 @@ Tilemap::Tilemap(const char* tilemapPath)
             firstgid,
             imagePath.string(),
             tilesetInfoJson["columns"],
-            tilesetImageHeight / tilesetTileHeight,
+            static_cast<int>(tilesetImageHeight / tilesetTileHeight),
             tilesetInfoJson["imagewidth"],
             tilesetInfoJson["imageheight"],
             tilesetInfoJson["tilecount"]
@@ -79,7 +79,7 @@ Tilemap::Tilemap(const char* tilemapPath)
     // load map, respecting Z order
     m_TileLayers.resize(m_MapInfo.layerCount);
     m_ObjectLayers.resize(m_MapInfo.layerCount);
-    for (int zOrder = 0; zOrder < m_MapInfo.layerCount; zOrder++)
+    for (size_t zOrder = 0; zOrder < m_MapInfo.layerCount; zOrder++)
     {
         const auto& layerJson = j["layers"][zOrder];
 
@@ -131,9 +131,9 @@ Tilemap::Tilemap(const char* tilemapPath)
     }
 }
 
-void Tilemap::render(const Renderer& renderer) const
+void Tilemap::render(const Renderer& renderer, const Window& window) const
 {
-    for (int i = 0; i < m_MapInfo.layerCount; i++)
+    for (size_t i = 0; i < m_MapInfo.layerCount; i++)
     {
         const auto& objectLayer = m_ObjectLayers[i];
         for (const auto& object : objectLayer)
@@ -144,7 +144,7 @@ void Tilemap::render(const Renderer& renderer) const
                 object.x,
                 -(object.y - object.height)
             };
-            renderTileFromTileset(renderer, tileset, uvRect, position);
+            renderTileFromTileset(renderer, window, tileset, uvRect, position);
         }
 
         const auto& tileLayer = m_TileLayers[i];
@@ -160,7 +160,7 @@ void Tilemap::render(const Renderer& renderer) const
                 dataIdx / m_MapInfo.width * -m_MapInfo.tileHeight
             };
 
-            renderTileFromTileset(renderer, tileset, uvRect, position);
+            renderTileFromTileset(renderer, window, tileset, uvRect, position);
         }
     }
 }
@@ -252,8 +252,8 @@ glm::vec4 Tilemap::computeTileUV(const Tileset& tileset, TileGID gid)
     int tilesetIndex = gid - tileset.firstgid;
     assert(tilesetIndex >= 0);
 
-    float xIndex = tilesetIndex % tileset.columns;
-    float yIndex = tilesetIndex / tileset.columns;
+    float xIndex = static_cast<float>(tilesetIndex % tileset.columns);
+    float yIndex = static_cast<float>(tilesetIndex / tileset.columns);
 
     float uPerTile = 1.0f / tileset.columns;
     float vPerTile = 1.0f / tileset.rows;
@@ -267,7 +267,7 @@ glm::vec4 Tilemap::computeTileUV(const Tileset& tileset, TileGID gid)
 }
 
 void Tilemap::renderTileFromTileset(
-    const Renderer& renderer, const Tileset& tileset,
+    const Renderer& renderer, const Window& window, const Tileset& tileset,
     const glm::vec4& uvRect, const glm::vec2& position) const
 {
     glm::vec2 size{
@@ -277,7 +277,7 @@ void Tilemap::renderTileFromTileset(
 
     Sprite sprite{ position, size, tileset.texture };
     
-    renderer.drawSprite(sprite, uvRect);
+    renderer.drawSprite(window, sprite, uvRect);
 }
 
 
