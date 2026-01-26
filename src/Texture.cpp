@@ -22,32 +22,9 @@ Texture::Texture(const char* assetPath)
     unsigned char *data = stbi_load(assetPath, &width, &height, &nrChannels, 0); 
     if (!data)
     {
-        // report failure
         std::cerr << "[Texture] Failed to load texture: '" << assetPath << "'\n";
         stbi_image_free(data);
-
-        // load fallback 'error' texture
-        assetPath = "assets/fallback_texture.png";
-        data = stbi_load(assetPath, &width, &height, &nrChannels, 0);
-        if (!data)
-        {
-            std::cerr << "[Texture] Failed to load fallback texture: '" << assetPath << "', verify assets path.\n";
-            stbi_image_free(data);
-
-            // Even the fallback failed. Generate a texture on the fly.
-            
-            unsigned char fallbackData[] = {
-                255,   0, 255, 255,   0,   0,   0, 255,
-                  0,   0,   0, 255, 255,   0, 255, 255
-            };
-            const int fallbackWidth = 2, fallbackHeight = 2;
-            GLCall(glGenTextures(1, &textureID));
-            GLCall(glActiveTexture(GL_TEXTURE0));
-            GLCall(glBindTexture(GL_TEXTURE_2D, textureID));
-            GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-            GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-            GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, fallbackWidth, fallbackHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, fallbackData));
-        }
+        initAsPlaceholder(*this);
     }
     else
     {
@@ -77,10 +54,36 @@ Texture::Texture()
 {
 }
 
+Texture Texture::makePlaceholder()
+{
+    Texture texture;
+    Texture::initAsPlaceholder(texture);
+    return texture;
+}
+
 void Texture::bind() const
 {
     GLCall( glActiveTexture(GL_TEXTURE0) );
     GLCall( glBindTexture(GL_TEXTURE_2D, textureID) );
+}
+
+void Texture::initAsPlaceholder(Texture& texture)
+{
+    // Generate a fallback texture on the fly.
+    unsigned char fallbackData[] = {
+        255,   0, 255, 255,  64,   0,  64, 255,
+         64,   0,  64, 255, 255,   0, 255, 255
+    };
+    const int fallbackWidth = 2, fallbackHeight = 2;
+
+    GLCall(glGenTextures(1, &texture.textureID));
+    GLCall(glActiveTexture(GL_TEXTURE0));
+    GLCall(glBindTexture(GL_TEXTURE_2D, texture.textureID));
+    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+    GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, fallbackWidth, fallbackHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, fallbackData));
 }
 
 

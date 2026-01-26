@@ -31,6 +31,17 @@ private:
         {
         }
 
+        Tileset(TileGID firstgid, const Texture& texture, const std::string& image, int columns, int rows,
+            int imagewidth, int imageheight, int tilecount)
+            : firstgid{ firstgid },
+            texture{ texture },
+            image{ image },
+            columns{ columns }, rows{ rows },
+            imagewidth{ imagewidth }, imageheight{ imageheight },
+            tilecount{ tilecount }
+        {
+        }
+
         TileGID firstgid;
         Texture texture;
         std::string image;
@@ -59,7 +70,7 @@ private:
     };
 
     struct Position
-	{
+    {
     public:
         Position(int x, int y)
             : x{ x }, y{ y }
@@ -71,29 +82,29 @@ private:
         {
         }
 
-	public:
-		struct Hasher
-		{
-			std::size_t operator()(const Position& pos) const
-			{
-				std::size_t h1 = std::hash<int>{}(pos.x);
-				std::size_t h2 = std::hash<int>{}(pos.y);
-				return h1 ^ (h2 << 1);
-			}
-		};
+    public:
+        struct Hasher
+        {
+            std::size_t operator()(const Position& pos) const
+            {
+                std::size_t h1 = std::hash<int>{}(pos.x);
+                std::size_t h2 = std::hash<int>{}(pos.y);
+                return h1 ^ (h2 << 1);
+            }
+        };
 
-		struct Equality
-		{
-			bool operator()(const Position& left, const Position& right) const
-			{
-				return left.x == right.x && left.y == right.y;
-			}
-		};
+        struct Equality
+        {
+            bool operator()(const Position& left, const Position& right) const
+            {
+                return left.x == right.x && left.y == right.y;
+            }
+        };
 
-	public:
-		int x = 0;
-		int y = 0;
-	};
+    public:
+        int x = 0;
+        int y = 0;
+    };
 
 
     template<typename T, std::size_t N>
@@ -105,8 +116,8 @@ private:
         auto begin() { return items.begin(); }
         auto end() { return items.begin() + count; }
 
-		std::array<T, N> items = {};
-		std::size_t count = 0;
+        std::array<T, N> items = {};
+        std::size_t count = 0;
     };
 
     static constexpr int TILES_AROUND_COUNT = 9;
@@ -143,7 +154,7 @@ public:
      * @param rect Rectangle around which to find physics tiles
      * @return SpriteList of the physics tiles found
      */
-	SpriteList physicsSpritesAround(const Rect& rect) const;
+    SpriteList physicsSpritesAround(const Rect& rect) const;
 
     /**
      * @brief Get the mapping of positions to sizes
@@ -165,7 +176,7 @@ private:
 private:
     struct {
         int width = 0, height = 0;
-        int tileWidth = 0, tileHeight = 0;
+        int tileWidth = 16, tileHeight = 16;  // Set to non-zero (prevent division by zero)
         size_t layerCount = 0;
     } m_MapInfo;
 

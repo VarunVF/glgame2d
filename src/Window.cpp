@@ -122,7 +122,7 @@ void Window::setIcon(const std::string& iconPath)
         stbi_image_free(image.pixels);
     }
     else {
-        std::cerr << "[Window] Failed to load icon image '" << iconPath << "\n";
+        std::cerr << "[Window] Failed to load icon image '" << iconPath << "'\n";
     }
 }
 

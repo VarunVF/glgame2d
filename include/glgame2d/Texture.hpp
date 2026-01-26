@@ -13,7 +13,12 @@ public:
     Texture(unsigned int textureID);
     Texture();
 
+    static Texture makePlaceholder();
+
     void bind() const;
+
+private:
+    static void initAsPlaceholder(Texture& texture);
 
 public:
     unsigned int textureID;

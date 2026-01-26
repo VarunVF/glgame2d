@@ -18,8 +18,8 @@ Tilemap::Tilemap(const char* tilemapPath)
     m_Tilesets{}, m_TileLayers{}, m_ObjectLayers{},
     m_Rects{}, m_Neighbours{{
         {-1,  1}, {0,  1}, {1,  1},
-		{-1,  0}, {0,  0}, {1,  0},
-		{-1, -1}, {0, -1}, {1, -1},
+        {-1,  0}, {0,  0}, {1,  0},
+        {-1, -1}, {0, -1}, {1, -1},
     }}
 {
     assert(m_Neighbours.size() == TILES_AROUND_COUNT);
@@ -59,21 +59,45 @@ Tilemap::Tilemap(const char* tilemapPath)
         fs::path parentPath{ mapPath.parent_path() };
         fs::path tilesetInfoPath{ parentPath / source };
         std::ifstream tilesetInfoStream{ tilesetInfoPath };
+        if (!tilesetInfoStream.is_open())
+        {
+            std::cerr << "[Tilemap] Failed to load tileset info from '" << tilesetInfoPath.string() << "'\n";
+            continue;
+        }
         nlohmann::json tilesetInfoJson = nlohmann::json::parse(tilesetInfoStream);
 
-        std::string imagePathStr = tilesetInfoJson["image"];
-        fs::path imagePath = fs::canonical(parentPath / imagePathStr);
         float tilesetImageHeight = tilesetInfoJson["imageheight"];
         float tilesetTileHeight = tilesetInfoJson["tileheight"];
-        m_Tilesets.emplace_back(
-            firstgid,
-            imagePath.string(),
-            tilesetInfoJson["columns"],
-            static_cast<int>(tilesetImageHeight / tilesetTileHeight),
-            tilesetInfoJson["imagewidth"],
-            tilesetInfoJson["imageheight"],
-            tilesetInfoJson["tilecount"]
-        );
+
+        std::string imagePathStr = tilesetInfoJson["image"];
+        fs::path imagePath = parentPath / imagePathStr;
+        if (fs::exists(imagePath))
+        {
+            m_Tilesets.emplace_back(
+                firstgid,
+                imagePath.lexically_normal().string(),
+                tilesetInfoJson["columns"],
+                static_cast<int>(tilesetImageHeight / tilesetTileHeight),
+                tilesetInfoJson["imagewidth"],
+                tilesetInfoJson["imageheight"],
+                tilesetInfoJson["tilecount"]
+            );
+        }
+        else
+        {
+            // Provide placeholder for missing assets to avoid crashing
+            std::cerr << "[Tilemap] Failed to load tileset image from '" << imagePath.string() << "'\n";
+            m_Tilesets.emplace_back(
+                firstgid,
+                Texture::makePlaceholder(),
+                "placeholder",
+                tilesetInfoJson["columns"],
+                static_cast<int>(tilesetImageHeight / tilesetTileHeight),
+                tilesetInfoJson["imagewidth"],
+                tilesetInfoJson["imageheight"],
+                tilesetInfoJson["tilecount"]
+            );
+        }
     }
 
     // load map, respecting Z order
@@ -230,7 +254,7 @@ const std::unordered_map<
 const Tilemap::Tileset& Tilemap::getTilesetByGID(TileGID gid) const
 {
     assert(!m_Tilesets.empty());
-
+    
     if (gid <= 0)
     {
         std::cerr << "[Tilemap] Invalid Tile GID " << gid << "\n";
