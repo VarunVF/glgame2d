@@ -15,7 +15,7 @@ namespace glgame2d {
 class Entity
 {
 public:
-    Entity(const Sprite& sprite, float gravity = -600.0f);
+    Entity(const Sprite& sprite, float gravity = -600.0f, float terminalVelocity = -200.0f);
     virtual ~Entity() = default;
 
     void move(float dx, float dy);
@@ -35,6 +35,7 @@ protected:
     glm::vec2 m_Displacement;
     glm::vec2 m_Acceleration;
     glm::vec2 m_Velocity;
+    float m_TerminalVelocity;
     float m_AirTime;
 };
 

@@ -9,11 +9,12 @@
 namespace glgame2d {
 
 
-Entity::Entity(const Sprite& sprite, float gravity)
+Entity::Entity(const Sprite& sprite, float gravity, float terminalVelocity)
     : m_Sprite{ sprite },
     m_Displacement{ sprite.position },
     m_Acceleration{ 0.0f, gravity },
     m_Velocity{ 0.0f, 0.0f },
+    m_TerminalVelocity{ terminalVelocity },
     m_AirTime{ 0.0f }
 {
 }
@@ -30,7 +31,7 @@ void Entity::update(float deltaTime, const Tilemap& tilemap, const glm::vec2& in
     std::array<bool, 4> collisions = { false, false, false, false };
 
     // Euler Integration
-    m_Velocity.y = std::fmax(-100.0f, m_Velocity.y + m_Acceleration.y * deltaTime);
+    m_Velocity.y = std::fmax(m_TerminalVelocity, m_Velocity.y + m_Acceleration.y * deltaTime);
 
     const glm::vec2 frameMovement = (inputVelocity + m_Velocity) * deltaTime;
 
