@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+
+
 struct GLFWwindow;
 
 
@@ -26,6 +29,8 @@ public:
 	void disableVSync() const;
 
 	void maximize();
+
+	void setIcon(const std::string& iconPaths);
 
 	void getSize(int* width, int* height) const;
 	GLFWwindow* getGLFWWindow() const;

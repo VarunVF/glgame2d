@@ -1,4 +1,3 @@
-#include <iostream>
 #include <format>
 
 #include <glm/glm.hpp>
@@ -19,6 +18,7 @@ int main(void)
 {
 	// A Window is required before creating other objects (such as Renderer, Texture)
 	glgame2d::Window window{ 640, 480, "glgame2d", glgame2d::Window::WINDOWED };
+	window.setIcon("assets/container.jpg");
 	window.enableVSync();
 	
 	glgame2d::Renderer renderer{};
