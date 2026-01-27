@@ -4,10 +4,10 @@
 #include <glgame2d/Shader.hpp>
 
 
-TEST_CASE("Sprite compilation does not cause crashes", "[Sprite]")
+TEST_CASE("Shader can compile correctly", "[Shader]")
 {
     glgame2d::Window window{ 640, 480, "title" };
-	glgame2d::Renderer renderer{};
+    glgame2d::Renderer renderer{};
 
     SECTION("Renderer shader pair compiles without crash")
     {
@@ -42,6 +42,20 @@ TEST_CASE("Sprite compilation does not cause crashes", "[Sprite]")
             "}\n";
         
         glgame2d::Shader shader{ vertexSource, fragmentSource };
-        REQUIRE( true );
+        REQUIRE( shader.shaderProgram == 0 );
+    }
+    
+    SECTION("Shader can compile from external files")
+    {
+        auto shader = glgame2d::Shader::fromFiles("shaders/test.vsh", "shaders/test.fsh");
+
+        REQUIRE(shader.shaderProgram != 0);
+    }
+
+    SECTION("Shader compilation from non-existent files does not crash")
+    {
+        auto shader = glgame2d::Shader::fromFiles("no/such/file.vsh", "no/such/file.fsh");
+
+        REQUIRE(shader.shaderProgram == 0);
     }
 }

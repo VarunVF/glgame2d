@@ -20,6 +20,10 @@ For example, on Debian and derivatives like Ubuntu:
 sudo apt install libwayland-dev libxkbcommon-dev xorg-dev
 ```
 
+## Running Tests
+
+Run the Catch2 test executable from the `tests/` directory so that assets like shaders can be loaded for the tests.
+
 ## Third Party Acknowledgments
 
 This project has basic support for loading and rendering tilemaps created with [Tiled Map Editor](https://www.mapeditor.org/) through the `Tilemap` class.
