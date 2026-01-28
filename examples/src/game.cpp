@@ -1,17 +1,8 @@
 #include <format>
+#include <string>
 
+#include <glgame2d/glgame2d.hpp>
 #include <glm/glm.hpp>
-
-#include <glgame2d/Camera.hpp>
-#include <glgame2d/Clock.hpp>
-#include <glgame2d/Entity.hpp>
-#include <glgame2d/Font.hpp>
-#include <glgame2d/Input.hpp>
-#include <glgame2d/Mixer.hpp>
-#include <glgame2d/Renderer.hpp>
-#include <glgame2d/Shader.hpp>
-#include <glgame2d/Tilemap.hpp>
-#include <glgame2d/Window.hpp>
 
 
 int main(void)
@@ -81,6 +72,4 @@ int main(void)
 
 		deltaTime = clock.tick(false);  // Whether to cap the framerate
 	}
-
-	return 0;
 }
