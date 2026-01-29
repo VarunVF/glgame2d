@@ -1,14 +1,16 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <glgame2d/Font.hpp>
+#include <glgame2d/FontRenderer.hpp>
 #include <glgame2d/Renderer.hpp>
 #include <glgame2d/Window.hpp>
 
 
-TEST_CASE("Font loads and renders without crashing", "[Font]")
+TEST_CASE("Font loads and renders without crashing", "[Font][FontRenderer]")
 {
     glgame2d::Window window{ 800, 600, "stb_truetype_example" };
     glgame2d::Renderer renderer{};
+    glgame2d::FontRenderer fontRenderer{};
 
     SECTION("Invalid Font path does not cause crash")
     {
@@ -16,9 +18,9 @@ TEST_CASE("Font loads and renders without crashing", "[Font]")
         
         renderer.clear({ 0.2f, 0.3f, 0.3f, 1.0f });
 
-        font.drawBegin();
-        font.drawText(window, "This is some text rendered in OpenGL.", { -1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, 0.7f);
-        font.renderFrame();
+        fontRenderer.drawBegin();
+        fontRenderer.drawText(window, font, "This is some text rendered in OpenGL.", { -1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, 0.7f);
+        fontRenderer.renderFrame(font);
 
         window.swapBuffers();
         window.pollEvents();

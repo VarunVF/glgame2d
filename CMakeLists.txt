@@ -40,6 +40,7 @@ add_library(glgame2d
 	"src/Clock.cpp"
 	"src/Entity.cpp"
 	"src/Font.cpp"
+	"src/FontRenderer.cpp"
 	"src/Input.cpp"
 	"src/Keyboard.cpp"
 	"src/Mixer.cpp"
@@ -56,7 +57,7 @@ add_library(glgame2d
 	"src/miniaudio/miniaudio.c"
 	"src/stb/stb_image.c"
 	"src/stb/stb_truetype.c"
- )
+)
 target_include_directories(glgame2d PUBLIC
 	"include/"
 	${OPENGL_INCLUDE_DIR}
