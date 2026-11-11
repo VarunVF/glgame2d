@@ -31,10 +31,10 @@ private:
         {
         }
 
-        Tileset(TileGID firstgid, const Texture& texture, const std::string& image, int columns, int rows,
+        Tileset(TileGID firstgid, Texture texture, const std::string& image, int columns, int rows,
             int imagewidth, int imageheight, int tilecount)
             : firstgid{ firstgid },
-            texture{ texture },
+            texture{ std::move(texture) },
             image{ image },
             columns{ columns }, rows{ rows },
             imagewidth{ imagewidth }, imageheight{ imageheight },

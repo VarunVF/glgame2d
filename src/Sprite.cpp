@@ -4,7 +4,7 @@
 namespace glgame2d {
 
 
-Sprite::Sprite(const glm::vec2 &position, const glm::vec2 &size, const Texture& texture)
+Sprite::Sprite(const glm::vec2 &position, const glm::vec2 &size, const Texture* texture)
     : position{ position }, size{ size }, texture{ texture }
 {
 }

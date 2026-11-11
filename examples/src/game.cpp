@@ -20,11 +20,12 @@ int main(void)
     glgame2d::FontRenderer fontRenderer{};
     glgame2d::Font font{ "assets/arial.ttf", 64.0f };
 
+    glgame2d::Texture playerTexture{ "assets/awesomeface.png" };
     glgame2d::Entity player{
         glgame2d::Sprite{
             glm::vec2{  0.0f,  0.0f },
             glm::vec2{ 32.0f, 32.0f },
-            glgame2d::Texture{ "assets/awesomeface.png" }
+            &playerTexture
         }
     };
 

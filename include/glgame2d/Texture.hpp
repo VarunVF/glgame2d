@@ -1,5 +1,7 @@
 #pragma once
 
+#include <filesystem>
+
 
 namespace glgame2d {
 
@@ -8,20 +10,25 @@ class Texture
 {
 public:
     // Create a new texture from a file and upload it to the GPU
-    Texture(const char* assetPath);
-    // Take a texture that was already uploaded to the GPU
-    Texture(unsigned int textureID);
+    Texture(const std::filesystem::path& assetPath);
     Texture();
+    Texture(Texture&& other) noexcept;
+    Texture& operator=(Texture&& other) noexcept;
+    ~Texture();
+
+    Texture(const Texture&) = delete;
+    Texture& operator=(const Texture&) = delete;
 
     static Texture makePlaceholder();
 
-    void bind() const;
+    void bind(unsigned int slot = 0) const;
+    unsigned int getHandle() const;
 
 private:
     static void initAsPlaceholder(Texture& texture);
 
-public:
-    unsigned int textureID;
+private:
+    unsigned int m_TextureID;
 };
 
 

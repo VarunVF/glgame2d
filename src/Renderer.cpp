@@ -76,6 +76,8 @@ void Renderer::beginScene(const Camera &camera) const
 
 void Renderer::drawSprite(const Window& window, const Sprite& sprite, const glm::vec4& uvRect) const
 {
+    assert(sprite.texture != nullptr);
+
     // set per-sprite model uniform
     glm::mat4 model(1.0f);
     int width, height;
@@ -93,7 +95,7 @@ void Renderer::drawSprite(const Window& window, const Sprite& sprite, const glm:
     m_Shader.bind();
     GLCall( glUniform4f(m_UVrectLoc, uvRect[0], uvRect[1], uvRect[2], uvRect[3]) );
     GLCall( glUniformMatrix4fv(m_ModelLoc, 1, GL_FALSE, glm::value_ptr(model)) );
-    sprite.texture.bind();
+    sprite.texture->bind();
     GLCall( glBindVertexArray(m_QuadVAO.VAO) );
     GLCall( glDrawElements(GL_TRIANGLES, m_QuadVAO.indicesCount, GL_UNSIGNED_INT, 0) );
     GLCall( glBindVertexArray(0) );

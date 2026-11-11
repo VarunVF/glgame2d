@@ -299,7 +299,7 @@ void Tilemap::renderTileFromTileset(
         static_cast<float>(tileset.imageheight) / static_cast<float>(tileset.rows)
     };
 
-    Sprite sprite{ position, size, tileset.texture };
+    Sprite sprite{ position, size, &tileset.texture };
     
     renderer.drawSprite(window, sprite, uvRect);
 }

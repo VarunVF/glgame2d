@@ -1,6 +1,7 @@
 #include "glgame2d/Texture.hpp"
 
-#include <iostream>
+#include <filesystem>
+#include <string>
 
 #include <glad/glad.h>
 #include <stb_image.h>
@@ -12,25 +13,26 @@
 namespace glgame2d {
 
 
-Texture::Texture(const char* assetPath)
-    : textureID{ 0 }
+Texture::Texture(const std::filesystem::path& assetPath)
+    : m_TextureID{ 0 }
 {
     ensureContextOrAbort();
 
     int width, height, nrChannels;
     stbi_set_flip_vertically_on_load(true);
-    unsigned char *data = stbi_load(assetPath, &width, &height, &nrChannels, 0); 
+    std::string assetPathStr = assetPath.string();
+    unsigned char *data = stbi_load(assetPathStr.c_str(), &width, &height, &nrChannels, 0);
     if (!data)
     {
-        std::cerr << "[Texture] Failed to load texture: '" << assetPath << "'\n";
+        std::cerr << "[Texture] Failed to load texture: '" << assetPathStr << "'\n";
         stbi_image_free(data);
         initAsPlaceholder(*this);
     }
     else
     {
-        GLCall( glGenTextures(1, &textureID) );
+        GLCall( glGenTextures(1, &m_TextureID) );
         GLCall( glActiveTexture(GL_TEXTURE0) );
-        GLCall( glBindTexture(GL_TEXTURE_2D, textureID) );
+        GLCall( glBindTexture(GL_TEXTURE_2D, m_TextureID) );
         GLCall( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT) );
         GLCall( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT) );
         GLCall( glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR) );
@@ -44,15 +46,31 @@ Texture::Texture(const char* assetPath)
     }
 }
 
-Texture::Texture(unsigned int textureID)
-    : textureID{ textureID }
+Texture::Texture()
+    : m_TextureID{ 0 }
 {
 }
 
-Texture::Texture()
-    : textureID{ 0 }
+Texture::Texture(Texture&& other) noexcept
 {
+    m_TextureID = other.m_TextureID;
+    other.m_TextureID = 0;
 }
+
+Texture& Texture::operator=(Texture&& other) noexcept
+{
+    if (this != &other) {
+        GLCall( glDeleteTextures(1, &m_TextureID) );
+        m_TextureID = other.m_TextureID;
+        other.m_TextureID = 0;
+    }
+    return *this;
+}
+
+Texture::~Texture() {
+    GLCall( glDeleteTextures(1, &m_TextureID) );
+}
+
 
 Texture Texture::makePlaceholder()
 {
@@ -61,14 +79,20 @@ Texture Texture::makePlaceholder()
     return texture;
 }
 
-void Texture::bind() const
+void Texture::bind(unsigned int slot) const
 {
-    GLCall( glActiveTexture(GL_TEXTURE0) );
-    GLCall( glBindTexture(GL_TEXTURE_2D, textureID) );
+    GLCall( glActiveTexture(GL_TEXTURE0 + slot) );
+    GLCall( glBindTexture(GL_TEXTURE_2D, m_TextureID) );
+}
+
+unsigned int Texture::getHandle() const {
+    return m_TextureID;
 }
 
 void Texture::initAsPlaceholder(Texture& texture)
 {
+    ensureContextOrAbort();
+
     // Generate a fallback texture on the fly.
     unsigned char fallbackData[] = {
         255,   0, 255, 255,  64,   0,  64, 255,
@@ -76,9 +100,9 @@ void Texture::initAsPlaceholder(Texture& texture)
     };
     const int fallbackWidth = 2, fallbackHeight = 2;
 
-    GLCall(glGenTextures(1, &texture.textureID));
+    GLCall(glGenTextures(1, &texture.m_TextureID));
     GLCall(glActiveTexture(GL_TEXTURE0));
-    GLCall(glBindTexture(GL_TEXTURE_2D, texture.textureID));
+    GLCall(glBindTexture(GL_TEXTURE_2D, texture.m_TextureID));
     GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
     GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
     GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));

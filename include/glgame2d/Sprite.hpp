@@ -11,7 +11,7 @@ namespace glgame2d {
 
 struct Sprite
 {
-    Sprite(const glm::vec2& position, const glm::vec2& size, const Texture& texture);
+    Sprite(const glm::vec2& position, const glm::vec2& size, const Texture* texture);
     Sprite(const glm::vec2& position, const glm::vec2& size);
     Sprite();
 
@@ -20,7 +20,7 @@ struct Sprite
     
     glm::vec2 position;
     glm::vec2 size;
-    Texture texture;
+    const Texture* texture;
 };
 
 

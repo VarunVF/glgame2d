@@ -73,6 +73,7 @@ target_link_libraries(glgame2d PUBLIC
 )
 
 # Build tests
+enable_testing()
 add_subdirectory("tests/")
 
 # Build example projects

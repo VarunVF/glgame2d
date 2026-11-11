@@ -9,9 +9,9 @@
 namespace glgame2d {
 
 
-Entity::Entity(const Sprite& sprite, float gravity, float terminalVelocity)
-    : m_Sprite{ sprite },
-    m_Displacement{ sprite.position },
+Entity::Entity(Sprite sprite, float gravity, float terminalVelocity)
+    : m_Sprite{ std::move(sprite) },
+    m_Displacement{ m_Sprite.position },
     m_Acceleration{ 0.0f, gravity },
     m_Velocity{ 0.0f, 0.0f },
     m_TerminalVelocity{ terminalVelocity },

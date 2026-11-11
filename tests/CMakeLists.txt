@@ -14,8 +14,6 @@ FetchContent_MakeAvailable(catch2)
 
 # Tests
 
-enable_testing()
-
 add_executable(glgame2d_tests
     "tests.cpp"
     "camera_tests.cpp"
@@ -30,4 +28,6 @@ target_link_libraries(glgame2d_tests PRIVATE
     Catch2::Catch2WithMain
 )
 
-add_test(NAME glgame2d_tests COMMAND glgame2d_tests)
+add_test(NAME glgame2d_tests COMMAND glgame2d_tests
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
