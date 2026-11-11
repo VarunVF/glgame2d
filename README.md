@@ -24,15 +24,20 @@ sudo apt install libwayland-dev libxkbcommon-dev xorg-dev
 
 Run the Catch2 test executable from the `tests/` directory so that assets like shaders can be loaded for the tests.
 
-## Third Party Acknowledgments
+## Tilemaps
 
-This project has basic support for loading and rendering tilemaps created with [Tiled Map Editor](https://www.mapeditor.org/) through the `Tilemap` class.
-Export tilemaps and tilesets in JSON format (`.tmj` or `.tsj`).
+glgame2d can load and render tilemaps made with [Tiled Map Editor](https://www.mapeditor.org/) through the `Tilemap` class.
+Export tilemaps and tilesets in JSON format (`.tmj` / `.tsj`).
 
-This project uses the following libraries:
-- [glfw](https://github.com/glfw/glfw) (zlib License)
-- [glad](https://glad.dav1d.de/) (Public Domain/CC0)
-- [stb_image](https://github.com/nothings/stb) (Public Domain/MIT License)
-- [glm](https://github.com/g-truc/glm) (MIT License)
-- [miniaudio](https://github.com/mackron/miniaudio) (Public Domain/MIT 0)
-- [JSON for Modern C++](https://github.com/nlohmann/json) (MIT License)
+## Third-Party Libraries
+
+- [glad](https://github.com/Dav1dde/glad)
+- [GLFW](https://github.com/glfw/glfw)
+- [GLM](https://github.com/g-truc/glm)
+- [JSON for Modern C++](https://github.com/nlohmann/json)
+- [miniaudio](https://github.com/mackron/miniaudio)
+- [stb_image / stb_truetype](https://github.com/nothings/stb)
+
+Font rendering is adapted from [stb-truetype-example](https://github.com/shreyaspranav/stb-truetype-example). Tests use [Catch2](https://github.com/catchorg/Catch2).
+
+See [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) for full license texts.
