@@ -4,6 +4,10 @@ project(glgame2d)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+option(GLGAME2D_SANITIZE "Build with ASan and UBSan" OFF)
+option(GLGAME2D_BUILD_TESTS "Build tests" ON)
+option(GLGAME2D_BUILD_EXAMPLES "Build example executables" ON)
+
 include(FetchContent)
 
 # Obtain GLM
@@ -32,6 +36,27 @@ FetchContent_Declare(
 	GIT_TAG			v3.12.0
 )
 FetchContent_MakeAvailable(nlohmann_json)
+
+if(GLGAME2D_SANITIZE)
+    if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+        set(GLGAME2D_SAN_FLAGS
+            -fsanitize=address,undefined
+            -fno-sanitize-recover=all   # UBSan aborts instead of printing and continuing
+            -fno-omit-frame-pointer     # readable stack traces
+        )
+        add_compile_options(${GLGAME2D_SAN_FLAGS} -g -O1)
+        add_link_options(${GLGAME2D_SAN_FLAGS})
+
+		# check operator[] bounds on std::vector and std::array
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+            add_compile_options(-D_GLIBCXX_ASSERTIONS)
+        endif()
+    elseif(MSVC)
+        # MSVC only supports ASan
+        add_compile_options(/fsanitize=address)
+        add_link_options(/fsanitize=address)
+    endif()
+endif()
 
 
 # Add our source
@@ -73,8 +98,12 @@ target_link_libraries(glgame2d PUBLIC
 )
 
 # Build tests
-enable_testing()
-add_subdirectory("tests/")
+if(GLGAME2D_BUILD_TESTS)
+	enable_testing()
+	add_subdirectory("tests/")
+endif()
 
 # Build example projects
-add_subdirectory("examples/")
+if(GLGAME2D_BUILD_EXAMPLES)
+	add_subdirectory("examples/")
+endif()
