@@ -1,3 +1,4 @@
+#include "glgame2d/Camera.hpp"
 #include <catch2/catch_test_macros.hpp>
 
 #include <glgame2d/Font.hpp>
@@ -10,6 +11,7 @@ TEST_CASE("Font loads and renders without crashing", "[Font][FontRenderer]")
 {
     glgame2d::Window window{ 800, 600, "stb_truetype_example" };
     glgame2d::Renderer renderer{};
+    glgame2d::Camera camera{};
     glgame2d::FontRenderer fontRenderer{};
 
     SECTION("Invalid Font path does not cause crash")
@@ -19,7 +21,7 @@ TEST_CASE("Font loads and renders without crashing", "[Font][FontRenderer]")
         renderer.clear({ 0.2f, 0.3f, 0.3f, 1.0f });
 
         fontRenderer.drawBegin();
-        fontRenderer.drawText(window, font, "This is some text rendered in OpenGL.", { -1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, 0.7f);
+        fontRenderer.drawText(window, camera, font, "This is some text rendered in OpenGL.", { -1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, 0.7f);
         fontRenderer.renderFrame(font);
 
         window.swapBuffers();

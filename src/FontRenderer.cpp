@@ -1,20 +1,11 @@
 #include "glgame2d/FontRenderer.hpp"
 
-/*
-Thanks to shreyaspranav
-
-This is a simple demo of rendering fonts using stb_truetype.h
-
-The following example demonstrates to render text using batched rendering
-i.e., rendering a huge number of quads in one batch rather than once for every quad.
-
-The following demostration doesn't use Element Buffers for the sake of simplicity, the same can be
-extended to save a little bit of VRAM
-*/
+// Adapted from stb-truetype-example by shreyaspranav (MIT License):
+// https://github.com/shreyaspranav/stb-truetype-example
+// Refactored into Font/FontRenderer classes, with bug fixes and cleanup.
+// See THIRD_PARTY_LICENSES.md for the full license text.
 
 #include <cstdint>
-#include <fstream>
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -51,14 +42,15 @@ void FontRenderer::drawBegin()
 }
 
 // Adds the required vertices and indices to render:
-void FontRenderer::drawText(const Window& window, const Font& font, const std::string& text, glm::vec3 position, glm::vec4 color, float size)
+void FontRenderer::drawText(const Window& window, const Camera& camera, const Font& font,
+    const std::string& text, glm::vec3 position, glm::vec4 color, float size)
 {
     int order[6] = { 0, 1, 2, 0, 2, 3 };
     int currentWindowWidth = 0, currentWindowHeight = 0;
     window.getSize(&currentWindowWidth, &currentWindowHeight);
 
     float aspectRatio = static_cast<float>(currentWindowWidth) / static_cast<float>(currentWindowHeight);
-    setupViewProjection(aspectRatio);
+    setupViewProjection(aspectRatio, camera.getViewMatrix());
     
     float pixelScale = 2.0f / currentWindowHeight;
 
@@ -66,13 +58,13 @@ void FontRenderer::drawText(const Window& window, const Font& font, const std::s
 
     for (char ch : text)
     {
-        // Check if the charecter glyph is in the font atlas.
-        if (ch >= font.codePointOfFirstChar && ch <= font.codePointOfFirstChar + font.charsToIncludeInFontAtlas)
+        // Check if the character glyph is in the font atlas.
+        if (ch >= font.codePointOfFirstChar && ch < font.codePointOfFirstChar + font.charsToIncludeInFontAtlas)
         {
             if (m_Vertices.size() <= m_VertexIndex)
                 m_Vertices.resize(m_Vertices.size() + 6);
 
-            // Retrive the data that is used to render a glyph of charecter 'ch'
+            // Retrive the data that is used to render a glyph of character 'ch'
             const stbtt_packedchar* packedChar = &font.m_PackedChars[ch - font.codePointOfFirstChar];
             const stbtt_aligned_quad* alignedQuad = &font.m_AlignedQuads[ch - font.codePointOfFirstChar];
 
@@ -134,18 +126,10 @@ void FontRenderer::drawText(const Window& window, const Font& font, const std::s
     }
 }
 
-void FontRenderer::setupViewProjection(float aspectRatio)
+void FontRenderer::setupViewProjection(float aspectRatio, const glm::mat4& viewMatrix)
 {
     glm::mat4 projectionMat = glm::ortho(-aspectRatio, aspectRatio, -1.0f, 1.0f);
-    glm::mat4 viewMat = glm::mat4(1.0f);
-
-    viewMat = glm::translate(viewMat, { 0.0f, 0.0f, 0.0f });
-    viewMat = glm::rotate(viewMat, 0.0f, { 1, 0, 0 });
-    viewMat = glm::rotate(viewMat, 0.0f, { 0, 1, 0 });
-    viewMat = glm::rotate(viewMat, 0.0f, { 0, 0, 1 });
-    viewMat = glm::scale(viewMat, { 1.0f, 1.0f, 1.0f });
-
-    m_ViewProjectionMat = projectionMat * viewMat;
+    m_ViewProjectionMat = projectionMat * viewMatrix;
 }
 
 
@@ -219,7 +203,7 @@ void FontRenderer::renderFrame(const Font& font)
             (sizeOfVertices % vboSize) / sizeof(Vertex) :
             vboSize / (sizeof(Vertex) * 6);
 
-        GLCall( glUniformMatrix4fv(m_ViewProjectionMatrixLoc, 1, GL_TRUE, glm::value_ptr(m_ViewProjectionMat)) );
+        GLCall( glUniformMatrix4fv(m_ViewProjectionMatrixLoc, 1, GL_FALSE, glm::value_ptr(m_ViewProjectionMat)) );
 
         GLCall( glBindVertexArray(m_VaoID) );
         GLCall( glBindBuffer(GL_ARRAY_BUFFER, m_VboID) );

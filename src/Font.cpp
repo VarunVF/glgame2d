@@ -1,5 +1,6 @@
 #include "glgame2d/Font.hpp"
 
+#include <cassert>
 #include <cstdint>
 #include <fstream>
 #include <iostream>
@@ -77,7 +78,7 @@ std::vector<uint8_t> Font::setupFont(const std::string& fontFile)
         0,                                      // Font Index                                 
         m_FontSize,                             // Size of font in pixels. (Use STBTT_POINT_SIZE(m_FontSize) to use points) 
         codePointOfFirstChar,                   // Code point of the first charecter
-        charsToIncludeInFontAtlas,              // No. of charecters to be included in the font atlas 
+        charsToIncludeInFontAtlas,              // No. of characters to be included in the font atlas 
         m_PackedChars                           // stbtt_packedchar array, this struct will contain the data to render a glyph
     );
     stbtt_PackEnd(&ctx);

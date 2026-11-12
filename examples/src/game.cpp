@@ -66,7 +66,7 @@ int main(void)
 
         fontRenderer.drawBegin();
         std::string fpsString = std::format("{:.1f} FPS", 1.0 / deltaTime);
-        fontRenderer.drawText(window, font, fpsString, { 0.8f, -0.8f, 0.0f }, { 1.0f, 1.0f, 1.0f, 0.5f }, 0.5f);
+        fontRenderer.drawText(window, camera, font, fpsString, { 0.8f, -0.8f, 0.0f }, { 1.0f, 1.0f, 1.0f, 0.5f }, 0.5f);
         fontRenderer.renderFrame(font);
 
         window.swapBuffers();

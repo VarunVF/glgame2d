@@ -24,7 +24,7 @@ private:
 private:
     // Font Atlas settings:
     static constexpr uint32_t codePointOfFirstChar = 32;        // ASCII of ' ' (Space)
-    static constexpr uint32_t charsToIncludeInFontAtlas = 95;   // Include 95 charecters
+    static constexpr uint32_t charsToIncludeInFontAtlas = 95;   // Include 95 characters
     static constexpr uint32_t fontAtlasWidth = 512;
     static constexpr uint32_t fontAtlasHeight = 512;
 

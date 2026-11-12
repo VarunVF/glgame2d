@@ -6,6 +6,7 @@
 
 #include <glm/glm.hpp>
 
+#include "glgame2d/Camera.hpp"
 #include <glgame2d/Font.hpp>
 #include <glgame2d/Shader.hpp>
 #include <glgame2d/Window.hpp>
@@ -32,12 +33,13 @@ public:
     FontRenderer();
 
     void drawBegin();
-    void drawText(const Window& window, const Font& font, const std::string& text, glm::vec3 position, glm::vec4 color, float size);
+    void drawText(const Window& window, const Camera& camera, const Font& font,
+        const std::string& text, glm::vec3 position, glm::vec4 color, float size);
     void renderFrame(const Font& font);
 
 private:
     void setupVAOAndVBO();
-    void setupViewProjection(float aspectRatio);
+    void setupViewProjection(float aspectRatio, const glm::mat4& viewMatrix);
     void bindFontTexture(const Font& font, uint8_t slot);
     void useShaderProgram(bool use);
 
