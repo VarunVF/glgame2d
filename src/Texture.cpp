@@ -85,7 +85,7 @@ void Texture::bind(unsigned int slot) const
     GLCall( glBindTexture(GL_TEXTURE_2D, m_TextureID) );
 }
 
-unsigned int Texture::getHandle() const {
+unsigned int Texture::textureID() const {
     return m_TextureID;
 }
 

@@ -16,6 +16,7 @@ class Font
 
 public:
     Font(const std::string& fontFilePath, float fontSize);
+    unsigned int textureID() const;
 
 private:
     std::vector<uint8_t> setupFont(const std::string& fontFile);
@@ -37,7 +38,7 @@ private:
     stbtt_packedchar m_PackedChars[charsToIncludeInFontAtlas];
     stbtt_aligned_quad m_AlignedQuads[charsToIncludeInFontAtlas];
 
-    uint32_t m_FontTextureID;
+    unsigned int m_FontTextureID;
 };
 
 

@@ -22,7 +22,7 @@ public:
     static Texture makePlaceholder();
 
     void bind(unsigned int slot = 0) const;
-    unsigned int getHandle() const;
+    unsigned int textureID() const;
 
 private:
     static void initAsPlaceholder(Texture& texture);

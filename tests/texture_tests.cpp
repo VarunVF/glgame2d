@@ -16,19 +16,19 @@ TEST_CASE("Texture loading", "[Texture]")
     SECTION("Placeholder texture works")
     {
         glgame2d::Texture texture = glgame2d::Texture::makePlaceholder();
-        REQUIRE(texture.getHandle() != 0);        
+        REQUIRE(texture.textureID() != 0);        
     }
 
     SECTION("Loading Texture with nonexistent path makes placeholder")
     {
         glgame2d::Texture texture{ "this/path/is/invalid" };
-        REQUIRE(texture.getHandle() != 0);
+        REQUIRE(texture.textureID() != 0);
     }
 
     SECTION("Loading Texture with valid path gives valid texture ID")
     {
         glgame2d::Texture texture{ "assets/container.jpg" };
-        REQUIRE(texture.getHandle() != 0);
+        REQUIRE(texture.textureID() != 0);
 
         GLint width = 0;
         texture.bind();
@@ -53,30 +53,30 @@ TEST_CASE("Texture semantics", "[Texture]")
     SECTION("Move constructor")
     {
         glgame2d::Texture a{ "assets/container.jpg" };
-        unsigned int movingID = a.getHandle();
+        unsigned int movingID = a.textureID();
         REQUIRE(movingID != 0);
 
         glgame2d::Texture b = std::move(a);
-        REQUIRE(b.getHandle() == movingID);
+        REQUIRE(b.textureID() == movingID);
         REQUIRE(glIsTexture(movingID) == GL_TRUE);
-        REQUIRE(a.getHandle() == 0);
+        REQUIRE(a.textureID() == 0);
     }
 
     SECTION("Move assignment operator")
     {
         glgame2d::Texture a{ "assets/container.jpg" };
-        unsigned int movingID = a.getHandle();
+        unsigned int movingID = a.textureID();
         REQUIRE(movingID != 0);
 
         glgame2d::Texture b{ "assets/awesomeface.png" };
-        unsigned int expiringID = b.getHandle();
+        unsigned int expiringID = b.textureID();
         REQUIRE(expiringID != 0);
 
         b = std::move(a);
         REQUIRE(glIsTexture(expiringID) == GL_FALSE);
-        REQUIRE(b.getHandle() == movingID);
+        REQUIRE(b.textureID() == movingID);
         REQUIRE(glIsTexture(movingID) == GL_TRUE);
-        REQUIRE(a.getHandle() == 0);
+        REQUIRE(a.textureID() == 0);
     }
 
     SECTION("Texture resource should be freed it goes when out of scope")
@@ -84,7 +84,7 @@ TEST_CASE("Texture semantics", "[Texture]")
         unsigned int id = 0;
         {
             glgame2d::Texture texture{ "assets/container.jpg" };
-            id = texture.getHandle();
+            id = texture.textureID();
         }
     
         REQUIRE(glIsTexture(id) == GL_FALSE);

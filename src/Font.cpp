@@ -33,6 +33,11 @@ Font::Font(const std::string& fontFilePath, float fontSize)
     }
 }
 
+unsigned int Font::textureID() const
+{
+    return m_FontTextureID;
+}
+
 std::vector<uint8_t> Font::setupFont(const std::string& fontFile)
 {
     // Read the font file
