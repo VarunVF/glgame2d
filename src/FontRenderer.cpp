@@ -45,6 +45,11 @@ void FontRenderer::drawBegin()
 void FontRenderer::drawText(const Window& window, const Camera& camera, const Font& font,
     const std::string& text, glm::vec3 position, glm::vec4 color, float size)
 {
+    if (font.textureID() == 0) {
+        std::cerr << "[FontRenderer] Cannot draw invalid font (path '" << font.m_FontFilePath << "')\n";
+        return;
+    }
+
     int order[6] = { 0, 1, 2, 0, 2, 3 };
     int currentWindowWidth = 0, currentWindowHeight = 0;
     window.getSize(&currentWindowWidth, &currentWindowHeight);
