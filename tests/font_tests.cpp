@@ -43,7 +43,7 @@ TEST_CASE("Font loads and renders without crashing", "[Font][FontRenderer]")
         renderer.clear();
         
         fontRenderer.drawBegin();
-        fontRenderer.drawText(window, camera, font, "This is some text rendered in OpenGL.", { -1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, 0.7f);
+        fontRenderer.drawText(window, camera, font, "This is some text rendered in OpenGL.", {}, {}, 1.0f);
         fontRenderer.renderFrame(font);
         
         window.swapBuffers();
@@ -60,7 +60,7 @@ TEST_CASE("Font loads and renders without crashing", "[Font][FontRenderer]")
         renderer.clear();
         
         fontRenderer.drawBegin();
-        fontRenderer.drawText(window, camera, font, "\x7f", { -1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, 0.7f);
+        fontRenderer.drawText(window, camera, font, "\x7f", {}, {}, 1.0f);
         fontRenderer.renderFrame(font);
         
         window.swapBuffers();
@@ -68,5 +68,23 @@ TEST_CASE("Font loads and renders without crashing", "[Font][FontRenderer]")
         
         REQUIRE(font.textureID() != 0);
         REQUIRE(glIsTexture(font.textureID()) == GL_TRUE);
+    }
+
+    SECTION("Font texture ends up on unit 0 even if another unit was active")
+    {
+        glgame2d::Font font{ "assets/consola.ttf", 64.0f };
+
+        glActiveTexture(GL_TEXTURE1);   // simulate other code leaving unit 1 active
+
+        fontRenderer.drawBegin();
+        fontRenderer.drawText(window, camera, font, "A", {}, {}, 1.0f);
+        fontRenderer.renderFrame(font);
+
+        glActiveTexture(GL_TEXTURE0);
+        GLint bound = 0;
+        glGetIntegerv(GL_TEXTURE_BINDING_2D, &bound);
+        REQUIRE(bound == static_cast<GLint>(font.textureID()));
+
+        glActiveTexture(GL_TEXTURE0);   // leave GL state as we found it
     }
 }

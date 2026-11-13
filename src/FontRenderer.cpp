@@ -173,8 +173,8 @@ void FontRenderer::useShaderProgram(bool use)
 
 void FontRenderer::bindFontTexture(const Font& font, uint8_t slot)
 {
-    GLCall( glBindTexture(GL_TEXTURE_2D, font.m_FontTextureID) );
     GLCall( glActiveTexture(GL_TEXTURE0 + slot) );
+    GLCall( glBindTexture(GL_TEXTURE_2D, font.m_FontTextureID) );
 
     // bind before uploading uniform
     useShaderProgram(true);
