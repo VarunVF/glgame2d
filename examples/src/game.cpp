@@ -15,6 +15,7 @@ int main(void)
     glgame2d::Renderer renderer{};
 
     glgame2d::Camera camera{};
+    glgame2d::Camera hudCamera{};
     glgame2d::Input input{};
     
     glgame2d::FontRenderer fontRenderer{};
@@ -66,7 +67,7 @@ int main(void)
 
         fontRenderer.drawBegin();
         std::string fpsString = std::format("{:.1f} FPS", 1.0 / deltaTime);
-        fontRenderer.drawText(window, camera, font, fpsString, { 0.8f, -0.8f, 0.0f }, { 1.0f, 1.0f, 1.0f, 0.5f }, 0.5f);
+        fontRenderer.drawText(window, hudCamera, font, fpsString, { 0.8f, -0.8f, 0.0f }, { 1.0f, 1.0f, 1.0f, 0.5f }, 0.5f);
         fontRenderer.renderFrame(font);
 
         window.swapBuffers();
