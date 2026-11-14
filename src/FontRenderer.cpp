@@ -5,6 +5,7 @@
 // Refactored into Font/FontRenderer classes, with bug fixes and cleanup.
 // See THIRD_PARTY_LICENSES.md for the full license text.
 
+#include <cassert>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -26,6 +27,8 @@ namespace glgame2d {
 FontRenderer::FontRenderer()
     : m_Vertices{},
     m_VertexIndex{ 0 },
+    m_PixelScale{ 0.0f },
+    m_InBatch{ false },
     m_VaoID{ 0 }, m_VboID{ 0 },
     m_Shader{ vertexShaderSrc, fragmentShaderSrc },
     m_ViewProjectionMatrixLoc{ m_Shader.uniformLocation("u_ViewProjectionMat") },
@@ -35,30 +38,35 @@ FontRenderer::FontRenderer()
     setupVAOAndVBO();
 }
 
-void FontRenderer::drawBegin()
+void FontRenderer::drawBegin(const Window& window, const Camera& camera)
 {
+    assert(!m_InBatch && "renderFrame must be called before the next drawBegin");
+    
+    m_InBatch = true;
     m_VertexIndex = 0;
     useShaderProgram(true);
+
+    int currentWindowWidth = 0, currentWindowHeight = 0;
+    window.getSize(&currentWindowWidth, &currentWindowHeight);
+    m_PixelScale = 2.0f / currentWindowHeight;
+    
+    float aspectRatio = static_cast<float>(currentWindowWidth) / static_cast<float>(currentWindowHeight);
+    setupViewProjection(aspectRatio, camera.getViewMatrix());
 }
 
 // Adds the required vertices and indices to render:
-void FontRenderer::drawText(const Window& window, const Camera& camera, const Font& font,
+void FontRenderer::drawText(const Font& font,
     const std::string& text, glm::vec3 position, glm::vec4 color, float size)
 {
+    assert(m_InBatch && "drawBegin must be called before drawText");
+    
     if (font.textureID() == 0) {
         std::cerr << "[FontRenderer] Cannot draw invalid font (path '" << font.m_FontFilePath << "')\n";
         return;
     }
 
     int order[6] = { 0, 1, 2, 0, 2, 3 };
-    int currentWindowWidth = 0, currentWindowHeight = 0;
-    window.getSize(&currentWindowWidth, &currentWindowHeight);
-
-    float aspectRatio = static_cast<float>(currentWindowWidth) / static_cast<float>(currentWindowHeight);
-    setupViewProjection(aspectRatio, camera.getViewMatrix());
     
-    float pixelScale = 2.0f / currentWindowHeight;
-
     glm::vec3 localPosition = position;
 
     for (char ch : text)
@@ -74,17 +82,17 @@ void FontRenderer::drawText(const Window& window, const Camera& camera, const Fo
             const stbtt_aligned_quad* alignedQuad = &font.m_AlignedQuads[ch - font.codePointOfFirstChar];
 
             // The units of the fields of the above structs are in pixels, 
-            // convert them to a unit of what we want be multilplying to pixelScale  
+            // convert them to a unit of what we want be multilplying to m_PixelScale  
             glm::vec2 glyphSize =
             {
-                (packedChar->x1 - packedChar->x0) * pixelScale * size,
-                (packedChar->y1 - packedChar->y0) * pixelScale * size
+                (packedChar->x1 - packedChar->x0) * m_PixelScale * size,
+                (packedChar->y1 - packedChar->y0) * m_PixelScale * size
             };
 
             glm::vec2 glyphBoundingBoxBottomLeft =
             {
-                localPosition.x + (packedChar->xoff * pixelScale * size),
-                localPosition.y - (packedChar->yoff + packedChar->y1 - packedChar->y0) * pixelScale * size
+                localPosition.x + (packedChar->xoff * m_PixelScale * size),
+                localPosition.y - (packedChar->yoff + packedChar->y1 - packedChar->y0) * m_PixelScale * size
             };
 
             // The order of vertices of a quad goes top-right, top-left, bottom-left, bottom-right
@@ -118,14 +126,14 @@ void FontRenderer::drawText(const Window& window, const Camera& camera, const Fo
             m_VertexIndex += 6;
 
             // Update the position to render the next glyph specified by packedChar->xadvance.
-            localPosition.x += packedChar->xadvance * pixelScale * size;
+            localPosition.x += packedChar->xadvance * m_PixelScale * size;
         }
 
         // Handle newlines seperately.
         else if (ch == '\n')
         {
             // advance y by m_FontSize, reset x-coordinate
-            localPosition.y -= font.m_FontSize * pixelScale * size;
+            localPosition.y -= font.m_FontSize * m_PixelScale * size;
             localPosition.x = position.x;
         }
     }
@@ -189,6 +197,8 @@ void FontRenderer::bindFontTexture(const Font& font, uint8_t slot)
 
 void FontRenderer::renderFrame(const Font& font)
 {
+    assert(m_InBatch && "drawBegin must be called before renderFrame");
+
     bindFontTexture(font, 0);
 
     // The vertex buffer need to be divided into chunks of size 'vboSize',
@@ -221,6 +231,8 @@ void FontRenderer::renderFrame(const Font& font)
     }
 
     // We should clear to prepare for the next draw call.
+    m_InBatch = false;
+    m_VertexIndex = 0;
     m_Vertices.clear();
 }
 

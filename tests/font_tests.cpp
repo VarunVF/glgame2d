@@ -88,8 +88,8 @@ TEST_CASE("Font loads and renders without crashing", "[Font][FontRenderer]")
         
         renderer.clear();
         
-        fontRenderer.drawBegin();
-        fontRenderer.drawText(window, camera, font, "Hello OpenGL", {-0.5f, 0.0f, 0.0f}, color, 1.0f);
+        fontRenderer.drawBegin(window, camera);
+        fontRenderer.drawText(font, "Hello OpenGL", {-0.5f, 0.0f, 0.0f}, color, 1.0f);
         fontRenderer.renderFrame(font);
         
         window.swapBuffers();
@@ -105,9 +105,9 @@ TEST_CASE("Font loads and renders without crashing", "[Font][FontRenderer]")
         
         renderer.clear();
         
-        fontRenderer.drawBegin();
+        fontRenderer.drawBegin(window, camera);
         // 0x7f is past the last character in the font, so FontRenderer should skip this value.
-        fontRenderer.drawText(window, camera, font, "\x7f", {}, color, 1.0f);
+        fontRenderer.drawText(font, "\x7f", {}, color, 1.0f);
         fontRenderer.renderFrame(font);
         
         window.swapBuffers();
@@ -122,8 +122,8 @@ TEST_CASE("Font loads and renders without crashing", "[Font][FontRenderer]")
         CerrCapture capture;
         glgame2d::Font invalidFont{ "this/path/is/invalid", 64.0f };
 
-        fontRenderer.drawBegin();
-        fontRenderer.drawText(window, camera, invalidFont, "A", {}, color, 1.0f);
+        fontRenderer.drawBegin(window, camera);
+        fontRenderer.drawText(invalidFont, "A", {}, color, 1.0f);
 
         REQUIRE(capture.str().find("[FontRenderer] Cannot draw") != std::string::npos);
     }
@@ -143,8 +143,8 @@ TEST_CASE("Font handles OpenGL state correctly", "[Font][FontRenderer]")
 
         glActiveTexture(GL_TEXTURE1);   // simulate other code leaving unit 1 active
 
-        fontRenderer.drawBegin();
-        fontRenderer.drawText(window, camera, font, "A", {}, color, 1.0f);
+        fontRenderer.drawBegin(window, camera);
+        fontRenderer.drawText(font, "A", {}, color, 1.0f);
         fontRenderer.renderFrame(font);
 
         glActiveTexture(GL_TEXTURE0);
@@ -162,8 +162,8 @@ TEST_CASE("Font handles OpenGL state correctly", "[Font][FontRenderer]")
         renderer.clear();   // black
         REQUIRE(countLitPixels(window) == 0);
 
-        fontRenderer.drawBegin();
-        fontRenderer.drawText(window, camera, font, "AAAA", { -0.5f, 0.0f, 0.0f }, { 1, 1, 1, 1 }, 1.0f);
+        fontRenderer.drawBegin(window, camera);
+        fontRenderer.drawText(font, "AAAA", { -0.5f, 0.0f, 0.0f }, { 1, 1, 1, 1 }, 1.0f);
         fontRenderer.renderFrame(font);
         REQUIRE(countLitPixels(window) > 0);
     }
@@ -182,8 +182,8 @@ TEST_CASE("Pixel-based image tests", "[Font][FontRenderer]")
         auto drawFrame = [&](glgame2d::FontRenderer& fontRenderer, const std::string& text)
         {
             renderer.clear();
-            fontRenderer.drawBegin();
-            fontRenderer.drawText(window, camera, font, text, { -0.5f, 0.0f, 0.0f }, color, 1.0f);
+            fontRenderer.drawBegin(window, camera);
+            fontRenderer.drawText(font, text, { -0.5f, 0.0f, 0.0f }, color, 1.0f);
             fontRenderer.renderFrame(font);
             return countLitPixels(window);
         };
@@ -203,16 +203,16 @@ TEST_CASE("Pixel-based image tests", "[Font][FontRenderer]")
         glgame2d::FontRenderer fontRenderer{};
     
         renderer.clear();
-        fontRenderer.drawBegin();
-        fontRenderer.drawText(window, camera, font, "AAAA", { 0.2f, 0.0f, 0.0f }, color, 1.0f);
+        fontRenderer.drawBegin(window, camera);
+        fontRenderer.drawText(font, "AAAA", { 0.2f, 0.0f, 0.0f }, color, 1.0f);
         fontRenderer.renderFrame(font);
         int x0 = 0;
         REQUIRE(leftmostLitX(window, x0));
     
         renderer.clear();
         camera.move(0.5f, 0.0f);
-        fontRenderer.drawBegin();
-        fontRenderer.drawText(window, camera, font, "AAAA", { 0.2f, 0.0f, 0.0f }, color, 1.0f);
+        fontRenderer.drawBegin(window, camera);
+        fontRenderer.drawText(font, "AAAA", { 0.2f, 0.0f, 0.0f }, color, 1.0f);
         fontRenderer.renderFrame(font);
         int x1 = 0;
         REQUIRE(leftmostLitX(window, x1));

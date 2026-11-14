@@ -32,8 +32,8 @@ private:
 public:
     FontRenderer();
 
-    void drawBegin();
-    void drawText(const Window& window, const Camera& camera, const Font& font,
+    void drawBegin(const Window& window, const Camera& camera);
+    void drawText(const Font& font,
         const std::string& text, glm::vec3 position, glm::vec4 color, float size);
     void renderFrame(const Font& font);
 
@@ -86,6 +86,8 @@ private:
     // Renderer data
     std::vector<Vertex> m_Vertices;
     uint32_t m_VertexIndex;
+    float m_PixelScale;
+    bool m_InBatch;
     
     // OpenGL Renderer IDs
     uint32_t m_VaoID, m_VboID;

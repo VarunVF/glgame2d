@@ -21,15 +21,15 @@ int main()
         renderer.clear({ 0.2f, 0.2f, 0.2f, 1.0f });
         renderer.beginScene(camera);
 
-        fontRenderer.drawBegin();
-        fontRenderer.drawText(window, camera, arial, "Font rendering example", { -0.8f, 0.4f, 0.0f }, { 0.9f, 0.2f, 0.3f, 1.0f }, 1.0f);
-        fontRenderer.drawText(window, camera, arial, "This is some text rendered in OpenGL.", { -1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, 0.7f);
-        fontRenderer.drawText(window, camera, arial, "The color of text can be changed too!", { -0.5f, -0.4f, 0.0f }, { 0.1f, 0.5f, 1.0f, 1.0f }, 0.5f);
-        fontRenderer.drawText(window, camera, arial, "This is a \nNewline demo", { -0.9f, -0.7f, 0.0f }, { 0.7f, 0.8f, 0.0f, 1.0f }, 0.6f);
+        fontRenderer.drawBegin(window, camera);
+        fontRenderer.drawText(arial, "Font rendering example", { -0.8f, 0.4f, 0.0f }, { 0.9f, 0.2f, 0.3f, 1.0f }, 1.0f);
+        fontRenderer.drawText(arial, "This is some text rendered in OpenGL.", { -1.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, 0.7f);
+        fontRenderer.drawText(arial, "The color of text can be changed too!", { -0.5f, -0.4f, 0.0f }, { 0.1f, 0.5f, 1.0f, 1.0f }, 0.5f);
+        fontRenderer.drawText(arial, "This is a \nNewline demo", { -0.9f, -0.7f, 0.0f }, { 0.7f, 0.8f, 0.0f, 1.0f }, 0.6f);
         fontRenderer.renderFrame(arial);
 
-        fontRenderer.drawBegin();
-        fontRenderer.drawText(window, camera, consola, "Here's another font", { 0.0f, -0.7f, 0.0f }, { 0.8f, 0.5f, 0.4f, 1.0f }, 0.4f);
+        fontRenderer.drawBegin(window, camera);
+        fontRenderer.drawText(consola, "Here's another font", { 0.0f, -0.7f, 0.0f }, { 0.8f, 0.5f, 0.4f, 1.0f }, 0.4f);
         fontRenderer.renderFrame(consola);
 
         window.swapBuffers();

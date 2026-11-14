@@ -65,9 +65,9 @@ int main(void)
         tilemap.render(renderer, window);
         renderer.drawSprite(window, player.getSprite());
 
-        fontRenderer.drawBegin();
+        fontRenderer.drawBegin(window, hudCamera);
         std::string fpsString = std::format("{:.1f} FPS", 1.0 / deltaTime);
-        fontRenderer.drawText(window, hudCamera, font, fpsString, { 0.8f, -0.8f, 0.0f }, { 1.0f, 1.0f, 1.0f, 0.5f }, 0.5f);
+        fontRenderer.drawText(font, fpsString, { 0.8f, -0.8f, 0.0f }, { 1.0f, 1.0f, 1.0f, 0.5f }, 0.5f);
         fontRenderer.renderFrame(font);
 
         window.swapBuffers();
