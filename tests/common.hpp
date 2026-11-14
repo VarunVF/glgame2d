@@ -5,10 +5,9 @@
 #include <vector>
 
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 #include "glgame2d/GLCall.hpp"
-#include "GLFW/glfw3.h"
-
 #include "glgame2d/Window.hpp"
 
 
@@ -67,4 +66,32 @@ inline bool leftmostLitX(const glgame2d::Window& window, int& outX)
     if (minX == width) return false;   // nothing lit
     outX = minX;
     return true;
+}
+
+// Rows are grouped into bands: runs of consecutive rows with at least one lit pixel.
+// Returns the top row of each band, ordered from the top of the screen down.
+// Rows are framebuffer y (glReadPixels: row 0 is the bottom), so tops are descending.
+inline std::vector<int> litBandTops(const glgame2d::Window& window)
+{
+    int width = 0, height = 0;
+    glfwGetFramebufferSize(window.getGLFWWindow(), &width, &height);
+    std::vector<uint8_t> pixels = readFramebuffer(window);
+
+    auto rowLit = [&](int y) {
+        for (int x = 0; x < width; x++) {
+            size_t i = (static_cast<size_t>(y) * width + x) * 4;
+            if (pixels[i] > 128 || pixels[i+1] > 128 || pixels[i+2] > 128)
+                return true;
+        }
+        return false;
+    };
+
+    std::vector<int> tops;
+    bool inBand = false;
+    for (int y = height - 1; y >= 0; y--) {
+        bool lit = rowLit(y);
+        if (lit && !inBand) tops.push_back(y);
+        inBand = lit;
+    }
+    return tops;
 }

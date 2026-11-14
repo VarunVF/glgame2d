@@ -227,3 +227,39 @@ TEST_CASE("HUD text ignores the world camera", "[Font][FontRenderer]")
     CAPTURE(expectedX, actualX);
     REQUIRE(actualX == expectedX);
 }
+
+TEST_CASE("Newline advances by the font's line height", "[Font][FontRenderer]")
+{
+    // What should be true: a newline moves down by (ascent - descent + lineGap) * scale,
+    // with scale = stbtt_ScaleForPixelHeight(fontSize) = fontSize / (ascent - descent).
+    // consola.ttf hhea: ascent 1521, descent -527, lineGap 350 (read from the file).
+    //   (1521 + 527 + 350) * 64 / (1521 + 527) = 74.94 px at fontSize 64.
+    // The old code advanced by fontSize (64 px); the two differ only by the lineGap term.
+    // Note: a font with lineGap 0 would make both equal, so this test needs consola (or
+    // another font with a large lineGap) to be able to go red.
+    constexpr float expectedAdvancePx = 2398.0f * 64.0f / 2048.0f;
+
+    glgame2d::Window window = makeWindow();
+    glgame2d::Renderer renderer{};
+    glgame2d::Camera camera{};
+    glgame2d::FontRenderer fontRenderer{};
+    glgame2d::Font font{ "assets/consola.ttf", 64.0f };
+
+    renderer.clear();
+    fontRenderer.drawBegin(window, camera);
+    fontRenderer.drawText(font, "A\nA", { -0.5f, 0.5f, 0.0f }, { 1, 1, 1, 1 }, 1.0f);
+    fontRenderer.renderFrame(font);
+
+    std::vector<int> tops = litBandTops(window);
+    REQUIRE(tops.size() == 2);   // two separate lines of glyphs
+
+    // FontRenderer scales by window height; readback is in framebuffer pixels (differs on HiDPI).
+    int winWidth = 0, winHeight = 0, fbWidth = 0, fbHeight = 0;
+    window.getSize(&winWidth, &winHeight);
+    glfwGetFramebufferSize(window.getGLFWWindow(), &fbWidth, &fbHeight);
+    float expected = expectedAdvancePx * fbHeight / winHeight;
+
+    int distance = tops[0] - tops[1];
+    CAPTURE(tops[0], tops[1], distance, expected);
+    REQUIRE(distance == Catch::Approx(expected).margin(2));
+}

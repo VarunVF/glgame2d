@@ -32,6 +32,7 @@ private:
 private:
     // Font info
     std::filesystem::path m_FontFilePath;
+    float m_LineHeight;
     const float m_FontSize;
 
     // Font Data (This is the data required to render a quad for each glyph)

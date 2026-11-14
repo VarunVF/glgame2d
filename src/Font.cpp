@@ -17,7 +17,7 @@ namespace glgame2d {
 
 
 Font::Font(const std::filesystem::path& fontFilePath, float fontSize)
-    : m_FontFilePath{ fontFilePath }, m_FontSize{ fontSize },
+    : m_FontFilePath{ fontFilePath }, m_LineHeight{ 0.0f }, m_FontSize{ fontSize },
     m_PackedChars{}, m_AlignedQuads{},
     m_FontTextureID{ 0 }
 {
@@ -68,6 +68,10 @@ std::vector<uint8_t> Font::setupFont(const std::filesystem::path& fontFile)
         std::cerr << "[Font] stbtt_InitFont() Failed!\n";
         return std::vector<uint8_t>{};
     }
+
+    int ascent = 0, descent = 0, lineGap = 0;
+    stbtt_GetFontVMetrics(&fontInfo, &ascent, &descent, &lineGap);
+    m_LineHeight = (ascent - descent + lineGap) * stbtt_ScaleForPixelHeight(&fontInfo, m_FontSize);
     
     uint32_t fontCount = stbtt_GetNumberOfFonts(fontDataBuf.data());
     std::cout << "[Font] Font File: " << fontFile << " has " << fontCount << " fonts\n";

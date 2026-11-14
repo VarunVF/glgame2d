@@ -131,12 +131,10 @@ void FontRenderer::drawText(const Font& font,
             // Update the position to render the next glyph specified by packedChar->xadvance.
             localPosition.x += packedChar->xadvance * m_PixelScale * size;
         }
-
-        // Handle newlines seperately.
         else if (ch == '\n')
         {
-            // advance y by m_FontSize, reset x-coordinate
-            localPosition.y -= font.m_FontSize * m_PixelScale * size;
+            // Handle newlines seperately. advance y by m_FontSize, reset x-coordinate
+            localPosition.y -= font.m_LineHeight * m_PixelScale * size;
             localPosition.x = position.x;
         }
     }
