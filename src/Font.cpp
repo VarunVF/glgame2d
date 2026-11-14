@@ -2,9 +2,9 @@
 
 #include <cassert>
 #include <cstdint>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <string>
 #include <vector>
 
 #include <glad/glad.h>
@@ -16,7 +16,7 @@
 namespace glgame2d {
 
 
-Font::Font(const std::string& fontFilePath, float fontSize)
+Font::Font(const std::filesystem::path& fontFilePath, float fontSize)
     : m_FontFilePath{ fontFilePath }, m_FontSize{ fontSize },
     m_PackedChars{}, m_AlignedQuads{},
     m_FontTextureID{ 0 }
@@ -38,8 +38,12 @@ unsigned int Font::textureID() const
     return m_FontTextureID;
 }
 
-std::vector<uint8_t> Font::setupFont(const std::string& fontFile)
+std::vector<uint8_t> Font::setupFont(const std::filesystem::path& fontFile)
 {
+    if (!std::filesystem::is_regular_file(fontFile)) {
+        return std::vector<uint8_t>{};
+    }
+
     // Read the font file
     std::ifstream inputStream(fontFile, std::ios::binary);
     if (!inputStream.is_open()) {
@@ -50,18 +54,23 @@ std::vector<uint8_t> Font::setupFont(const std::string& fontFile)
     std::streampos fontFileSize = inputStream.tellg();
     inputStream.seekg(0, std::ios::beg);
 
+    if (fontFileSize <= 0) {
+        return std::vector<uint8_t>{};
+    }
+
     std::vector<uint8_t> fontDataBuf;
     fontDataBuf.resize(fontFileSize);
     inputStream.read(reinterpret_cast<char*>(fontDataBuf.data()), fontFileSize);
 
     stbtt_fontinfo fontInfo = {};
 
-    uint32_t fontCount = stbtt_GetNumberOfFonts(fontDataBuf.data());
-    std::cout << "[Font] Font File: " << fontFile << " has " << fontCount << " fonts\n";
-
     if (!stbtt_InitFont(&fontInfo, fontDataBuf.data(), 0)) {
         std::cerr << "[Font] stbtt_InitFont() Failed!\n";
+        return std::vector<uint8_t>{};
     }
+    
+    uint32_t fontCount = stbtt_GetNumberOfFonts(fontDataBuf.data());
+    std::cout << "[Font] Font File: " << fontFile << " has " << fontCount << " fonts\n";
 
     std::vector<uint8_t> fontAtlasTextureData;
     fontAtlasTextureData.resize(fontAtlasWidth * fontAtlasHeight);
@@ -76,8 +85,7 @@ std::vector<uint8_t> Font::setupFont(const std::string& fontFile)
         0,                                      // Stride in bytes
         1,                                      // Padding between the glyphs
         nullptr);
-
-    stbtt_PackFontRange(
+    int packSuccess = stbtt_PackFontRange(
         &ctx,                                   // stbtt_pack_context
         fontDataBuf.data(),                     // Font Atlas texture data
         0,                                      // Font Index                                 
@@ -87,6 +95,12 @@ std::vector<uint8_t> Font::setupFont(const std::string& fontFile)
         m_PackedChars                           // stbtt_packedchar array, this struct will contain the data to render a glyph
     );
     stbtt_PackEnd(&ctx);
+    
+    if (packSuccess == 0)
+    {
+        std::cerr << "[Font] Glyphs do not fit in 512x512 atlas at size " << m_FontSize << " for '" << m_FontFilePath << "'\n";
+        return std::vector<uint8_t>{};
+    }
 
     for (int i = 0; i < charsToIncludeInFontAtlas; i++)
     {
@@ -119,8 +133,8 @@ void Font::setupFontTexture(const std::vector<uint8_t>& fontTextureData)
 
     GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
     GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
-    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+    GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 
     GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 }

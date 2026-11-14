@@ -4,6 +4,8 @@
 #include <sstream>
 #include <vector>
 
+#include <glad/glad.h>
+
 #include "glgame2d/GLCall.hpp"
 #include "GLFW/glfw3.h"
 

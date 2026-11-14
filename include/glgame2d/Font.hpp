@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include <string>
+#include <filesystem>
 #include <vector>
 
 #include <stb_truetype.h>
@@ -15,11 +15,11 @@ class Font
     friend class FontRenderer;
 
 public:
-    Font(const std::string& fontFilePath, float fontSize);
+    Font(const std::filesystem::path& fontFile, float fontSize);
     unsigned int textureID() const;
 
 private:
-    std::vector<uint8_t> setupFont(const std::string& fontFile);
+    std::vector<uint8_t> setupFont(const std::filesystem::path& fontFile);
     void setupFontTexture(const std::vector<uint8_t>& fontTextureData);
 
 private:
@@ -31,7 +31,7 @@ private:
 
 private:
     // Font info
-    std::string m_FontFilePath;
+    std::filesystem::path m_FontFilePath;
     const float m_FontSize;
 
     // Font Data (This is the data required to render a quad for each glyph)
