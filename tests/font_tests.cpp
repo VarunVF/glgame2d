@@ -141,18 +141,18 @@ TEST_CASE("Font handles OpenGL state correctly", "[Font][FontRenderer]")
     {
         glgame2d::Font font{ "assets/consola.ttf", 64.0f };
 
-        glActiveTexture(GL_TEXTURE1);   // simulate other code leaving unit 1 active
+        GLCall( glActiveTexture(GL_TEXTURE1) );   // simulate other code leaving unit 1 active
 
         fontRenderer.drawBegin(window, camera);
         fontRenderer.drawText(font, "A", {}, color, 1.0f);
         fontRenderer.renderFrame(font);
 
-        glActiveTexture(GL_TEXTURE0);
+        GLCall( glActiveTexture(GL_TEXTURE0) );
         GLint bound = 0;
-        glGetIntegerv(GL_TEXTURE_BINDING_2D, &bound);
+        GLCall( glGetIntegerv(GL_TEXTURE_BINDING_2D, &bound) );
         REQUIRE(bound == static_cast<GLint>(font.textureID()));
 
-        glActiveTexture(GL_TEXTURE0);   // leave GL state as we found it
+        GLCall( glActiveTexture(GL_TEXTURE0) );   // leave GL state as we found it
     }
 
     SECTION("Readback sees drawn text")
@@ -222,4 +222,24 @@ TEST_CASE("Pixel-based image tests", "[Font][FontRenderer]")
         CAPTURE(x0, x1);
         REQUIRE(x0 - x1 == Catch::Approx(0.5f * height / 2).margin(2));
     }
+}
+
+TEST_CASE("FontRenderer enables blending", "[Font][FontRenderer]")
+{
+    glgame2d::Window window{ 800, 600, "blend" };
+    glgame2d::Camera camera{};
+    glgame2d::FontRenderer fontRenderer{};
+
+    glDisable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE);
+    REQUIRE(glIsEnabled(GL_BLEND) == GL_FALSE);
+
+    fontRenderer.drawBegin(window, camera);
+    REQUIRE(glIsEnabled(GL_BLEND) == GL_TRUE);
+
+    GLint src = 0, dst = 0;
+    glGetIntegerv(GL_BLEND_SRC_RGB, &src);
+    glGetIntegerv(GL_BLEND_DST_RGB, &dst);
+    REQUIRE(src == GL_SRC_ALPHA);
+    REQUIRE(dst == GL_ONE_MINUS_SRC_ALPHA);
 }

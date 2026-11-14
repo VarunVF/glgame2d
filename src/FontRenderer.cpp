@@ -44,7 +44,10 @@ void FontRenderer::drawBegin(const Window& window, const Camera& camera)
     
     m_InBatch = true;
     m_VertexIndex = 0;
+    
     useShaderProgram(true);
+    GLCall( glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) );
+    GLCall( glEnable(GL_BLEND) );
 
     int currentWindowWidth = 0, currentWindowHeight = 0;
     window.getSize(&currentWindowWidth, &currentWindowHeight);
