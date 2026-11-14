@@ -243,3 +243,45 @@ TEST_CASE("FontRenderer enables blending", "[Font][FontRenderer]")
     REQUIRE(src == GL_SRC_ALPHA);
     REQUIRE(dst == GL_ONE_MINUS_SRC_ALPHA);
 }
+
+TEST_CASE("HUD text ignores the world camera", "[Font][FontRenderer]")
+{
+    glgame2d::Window window{ 800, 600, "hud" };
+    glgame2d::Renderer renderer{};
+    glgame2d::Camera worldCamera{};
+    const glgame2d::Camera hudCamera{};
+    glgame2d::FontRenderer fontRenderer{};
+    glgame2d::Font font{ "assets/consola.ttf", 64.0f };
+
+    const std::string worldText = "WORLD";
+    const std::string hudText = "HUD";
+    const glm::vec4 white{ 1.0f, 1.0f, 1.0f, 1.0f };
+    const glm::vec3 hudPos{ -0.5f, 0.0f, 0.0f };
+    const glm::vec3 worldPos{ 0.5f, 0.0f, 0.0f };
+
+    // Reference: HUD text alone.
+    renderer.clear();
+    fontRenderer.drawBegin(window, hudCamera);
+    fontRenderer.drawText(font, hudText, hudPos, white, 1.0f);
+    fontRenderer.renderFrame(font);
+    int expectedX = 0;
+    REQUIRE(leftmostLitX(window, expectedX));
+
+    // Same frame: world batch with a moved camera, then the HUD batch.
+    worldCamera.move(0.5f, 0.0f);
+    renderer.clear();
+
+    fontRenderer.drawBegin(window, worldCamera);
+    fontRenderer.drawText(font, worldText, worldPos, white, 1.0f);
+    fontRenderer.renderFrame(font);
+
+    fontRenderer.drawBegin(window, hudCamera);
+    fontRenderer.drawText(font, hudText, hudPos, white, 1.0f);
+    fontRenderer.renderFrame(font);
+
+    int actualX = 0;
+    REQUIRE(leftmostLitX(window, actualX));
+
+    CAPTURE(expectedX, actualX);
+    REQUIRE(actualX == expectedX);
+}
