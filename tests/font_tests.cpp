@@ -2,12 +2,11 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include <cstddef>
-#include <iostream>
-#include <sstream>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "common.hpp"
 #include <glgame2d/Camera.hpp>
 #include <glgame2d/Font.hpp>
 #include <glgame2d/FontRenderer.hpp>
@@ -16,60 +15,9 @@
 #include <glgame2d/Window.hpp>
 
 
-struct CerrCapture
-{
-    CerrCapture() { old = std::cerr.rdbuf(buffer.rdbuf()); }
-    ~CerrCapture() { std::cerr.rdbuf(old); }
-
-    std::string str() const { return buffer.str(); }
-
-    std::ostringstream buffer;
-    std::streambuf* old;
-};
-
-static std::vector<uint8_t> readFramebuffer(const glgame2d::Window& window)
-{
-    int width = 0, height = 0;
-    glfwGetFramebufferSize(window.getGLFWWindow(), &width, &height);
-
-    std::vector<uint8_t> pixels;
-    pixels.resize(static_cast<size_t>(width) * height * 4);
-    GLCall( glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data()) );
-
-    return pixels;
-}
-
-static size_t countLitPixels(const glgame2d::Window& window)
-{
-    size_t litPixels = 0;
-    std::vector<uint8_t> pixels = readFramebuffer(window);
-    for (size_t i = 0; i < pixels.size(); i += 4)
-        litPixels += pixels[i] > 128 || pixels[i+1] > 128 || pixels[i+2] > 128;
-    return litPixels;
-}
-
-static bool leftmostLitX(const glgame2d::Window& window, int& outX)
-{
-    int width = 0, height = 0;
-    glfwGetFramebufferSize(window.getGLFWWindow(), &width, &height);
-    std::vector<uint8_t> pixels = readFramebuffer(window);
-
-    int minX = width;
-    for (size_t i = 0; i < pixels.size(); i += 4) {
-        if (pixels[i] > 128 || pixels[i+1] > 128 || pixels[i+2] > 128) {
-            int x = static_cast<int>((i / 4) % width);
-            minX = std::min(minX, x);
-        }
-    }
-    if (minX == width) return false;   // nothing lit
-    outX = minX;
-    return true;
-}
-
-
 TEST_CASE("Font loads and renders without crashing", "[Font][FontRenderer]")
 {
-    glgame2d::Window window{ 800, 600, "stb_truetype_example" };
+    glgame2d::Window window = makeWindow();
     glgame2d::Renderer renderer{};
     glgame2d::Camera camera{};
     glgame2d::FontRenderer fontRenderer{};
@@ -131,7 +79,7 @@ TEST_CASE("Font loads and renders without crashing", "[Font][FontRenderer]")
 
 TEST_CASE("Font handles OpenGL state correctly", "[Font][FontRenderer]")
 {
-    glgame2d::Window window{ 800, 600, "title" };
+    glgame2d::Window window = makeWindow();
     glgame2d::Renderer renderer{};
     glgame2d::Camera camera{};
     glgame2d::FontRenderer fontRenderer{};
@@ -171,7 +119,7 @@ TEST_CASE("Font handles OpenGL state correctly", "[Font][FontRenderer]")
 
 TEST_CASE("Pixel-based image tests", "[Font][FontRenderer]")
 {
-    glgame2d::Window window{ 800, 600, "title" };
+    glgame2d::Window window = makeWindow();
     glgame2d::Renderer renderer{};
     glgame2d::Camera camera{};
     glgame2d::Font font{ "assets/consola.ttf", 64.0f };
@@ -226,7 +174,7 @@ TEST_CASE("Pixel-based image tests", "[Font][FontRenderer]")
 
 TEST_CASE("FontRenderer enables blending", "[Font][FontRenderer]")
 {
-    glgame2d::Window window{ 800, 600, "blend" };
+    glgame2d::Window window = makeWindow();
     glgame2d::Camera camera{};
     glgame2d::FontRenderer fontRenderer{};
 
@@ -246,7 +194,7 @@ TEST_CASE("FontRenderer enables blending", "[Font][FontRenderer]")
 
 TEST_CASE("HUD text ignores the world camera", "[Font][FontRenderer]")
 {
-    glgame2d::Window window{ 800, 600, "hud" };
+    glgame2d::Window window = makeWindow();
     glgame2d::Renderer renderer{};
     glgame2d::Camera worldCamera{};
     const glgame2d::Camera hudCamera{};

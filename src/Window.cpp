@@ -13,7 +13,7 @@
 namespace glgame2d {
 
 
-Window::Window(int width, int height, const char* title, WindowType type)
+Window::Window(int width, int height, const char* title, WindowType type, bool hideWindow)
 {
     if (!glfwInit())
         throw std::runtime_error("[Window] Failed to initalise GLFW");
@@ -43,6 +43,9 @@ Window::Window(int width, int height, const char* title, WindowType type)
         glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
         glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
     }
+
+    if (hideWindow)
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 
     m_Window = glfwCreateWindow(viewportWidth, viewportHeight, title, monitor, NULL);
     if (!m_Window)
@@ -80,7 +83,7 @@ Window::~Window()
     glfwTerminate();
 }
 
-bool Window::shouldClose()
+bool Window::shouldClose() const
 {
     return glfwWindowShouldClose(m_Window);
 }
@@ -90,19 +93,29 @@ void Window::swapBuffers()
     glfwSwapBuffers(m_Window);
 }
 
-void Window::pollEvents() const
+void Window::pollEvents()
 {
     glfwPollEvents();
 }
 
-void Window::enableVSync() const
+void Window::enableVSync()
 {
     glfwSwapInterval(1);
 }
 
-void Window::disableVSync() const
+void Window::disableVSync()
 {
     glfwSwapInterval(0);
+}
+
+void Window::show()
+{
+    glfwShowWindow(m_Window);
+}
+
+void Window::hide()
+{
+    glfwHideWindow(m_Window);
 }
 
 void Window::maximize()

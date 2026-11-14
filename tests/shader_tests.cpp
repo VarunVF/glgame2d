@@ -1,12 +1,13 @@
 #include <catch2/catch_test_macros.hpp>
 
+#include "common.hpp"
 #include <glgame2d/Renderer.hpp>
 #include <glgame2d/Shader.hpp>
 
 
 TEST_CASE("Shader can compile correctly", "[Shader]")
 {
-    glgame2d::Window window{ 640, 480, "title" };
+    glgame2d::Window window = makeWindow();
     glgame2d::Renderer renderer{};
 
     SECTION("Renderer shader pair compiles without crash")

@@ -18,16 +18,18 @@ public:
 	};
 
 public:
-	Window(int width, int height, const char* title, WindowType type = WindowType::WINDOWED);
+	Window(int width, int height, const char* title, WindowType type = WindowType::WINDOWED, bool hideWindow = false);
 	~Window();
 
-	bool shouldClose();
+	bool shouldClose() const;
 	void swapBuffers();
-	void pollEvents() const;
+	void pollEvents();
 
-	void enableVSync() const;
-	void disableVSync() const;
-
+	void enableVSync();
+	void disableVSync();
+	
+	void show();
+	void hide();
 	void maximize();
 
 	void setIcon(const std::string& iconPaths);

@@ -2,15 +2,17 @@
 
 #include <type_traits>
 
+#include <glad/glad.h>
+
+#include "common.hpp"
 #include <glgame2d/Renderer.hpp>
 #include <glgame2d/Texture.hpp>
 #include <glgame2d/Window.hpp>
 
-#include <glad/glad.h>
 
 TEST_CASE("Texture loading", "[Texture]")
 {
-	glgame2d::Window window{ 640, 480, "title" };
+	glgame2d::Window window = makeWindow();
 	glgame2d::Renderer renderer{};
 
     SECTION("Placeholder texture works")
@@ -39,7 +41,7 @@ TEST_CASE("Texture loading", "[Texture]")
 
 TEST_CASE("Texture semantics", "[Texture]")
 {
-    glgame2d::Window window{ 640, 480, "title" };
+    glgame2d::Window window = makeWindow();
 	glgame2d::Renderer renderer{};
 
     SECTION("Texture should be move-only")
