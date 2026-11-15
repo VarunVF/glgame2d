@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.11)
 project(glgame2d)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(GLGAME2D_SANITIZE "Build with ASan and UBSan" OFF)
