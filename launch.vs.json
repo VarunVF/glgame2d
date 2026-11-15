@@ -1,0 +1,27 @@
+{
+  "version": "0.2.1",
+  "defaults": {},
+  "configurations": [
+    {
+      "currentDir": "${workspaceRoot}\\examples",
+      "name": "game.exe (examples\\game.exe)",
+      "project": "CMakeLists.txt",
+      "projectTarget": "game.exe (examples\\game.exe)",
+      "type": "default"
+    },
+    {
+      "currentDir": "${workspaceRoot}\\examples",
+      "name": "font.exe (examples\\font.exe)",
+      "project": "CMakeLists.txt",
+      "projectTarget": "font.exe (examples\\font.exe)",
+      "type": "default"
+    },
+    {
+      "currentDir": "${workspaceRoot}\\tests",
+      "name": "glgame2d_tests.exe (tests\\glgame2d_tests.exe)",
+      "project": "CMakeLists.txt",
+      "projectTarget": "glgame2d_tests.exe (tests\\glgame2d_tests.exe)",
+      "type": "default"
+    }
+  ]
+}
