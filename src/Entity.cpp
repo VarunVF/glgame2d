@@ -44,10 +44,10 @@ void Entity::update(float deltaTime, const Tilemap& tilemap, const glm::vec2& in
     m_Displacement.x += frameMovement.x;
     Rect entityRect = m_Sprite.toRect();
     entityRect.x = m_Displacement.x;
-    auto colliders = tilemap.physicsSpritesAround(entityRect);
-    for (int i = 0; i < colliders.count; ++i)
+    Tilemap::SpriteList colliders = tilemap.physicsSpritesAround(entityRect);
+    for (const Sprite& sprite : colliders)
     {
-        Rect rect = colliders.items[i].toRect();
+        Rect rect = sprite.toRect();
         if (entityRect.collides(rect))
         {
             if (frameMovement.x > 0) {
@@ -67,9 +67,9 @@ void Entity::update(float deltaTime, const Tilemap& tilemap, const glm::vec2& in
     entityRect = m_Sprite.toRect();
     entityRect.y = m_Displacement.y;
     colliders = tilemap.physicsSpritesAround(entityRect);
-    for (int i = 0; i < colliders.count; ++i)
+    for (const Sprite& sprite : colliders)
     {
-        Rect rect = colliders.items[i].toRect();
+        Rect rect = sprite.toRect();
         if (entityRect.collides(rect))
         {
             if (frameMovement.y > 0) {

@@ -1,10 +1,13 @@
 #pragma once
 
 #include <array>
+#include <cassert>
+#include <cstddef>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
+#include "glgame2d/FixedList.hpp"
 #include "glgame2d/Rect.hpp"
 #include "glgame2d/Renderer.hpp"
 #include "glgame2d/Sprite.hpp"
@@ -63,7 +66,7 @@ private:
         int x, y;
     };
 
-private:
+public:
     struct Size {
         int w = 0;
         int h = 0;
@@ -106,21 +109,7 @@ private:
         int y = 0;
     };
 
-
-    template<typename T, std::size_t N>
-    struct FixedList
-    {
-        const auto begin() const { return items.begin(); }
-        const auto end() const { return items.begin() + count; }
-        
-        auto begin() { return items.begin(); }
-        auto end() { return items.begin() + count; }
-
-        std::array<T, N> items = {};
-        std::size_t count = 0;
-    };
-
-    static constexpr int TILES_AROUND_COUNT = 9;
+    static constexpr std::size_t TILES_AROUND_COUNT = 9;
     using SpriteList = FixedList<Sprite, TILES_AROUND_COUNT>;
     using PosList = FixedList<Position, TILES_AROUND_COUNT>;
 

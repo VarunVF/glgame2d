@@ -191,9 +191,9 @@ void Tilemap::render(const Renderer& renderer, const Window& window) const
 
 Tilemap::PosList Tilemap::tilesAround(const Rect& rect) const
 {
-    PosList tiles{};
-    assert(tiles.items.size() == TILES_AROUND_COUNT);
+    static_assert(PosList::capacity() == std::tuple_size_v<decltype(m_Neighbours)>);
 
+    PosList tiles{};
     Position tileLoc{
         static_cast<int>(rect.x) / m_MapInfo.tileWidth,
         static_cast<int>(rect.y) / m_MapInfo.tileHeight
@@ -207,36 +207,29 @@ Tilemap::PosList Tilemap::tilesAround(const Rect& rect) const
         };
 
         if (m_Rects.find(checkLoc) != m_Rects.end())
-            tiles.items[tiles.count++] = checkLoc;
+            tiles.push_back(checkLoc);
     }
 
-    assert(tiles.count <= TILES_AROUND_COUNT);
     return tiles;
 }
 
 Tilemap::SpriteList Tilemap::physicsSpritesAround(const Rect& rect) const
 {
+    static_assert(SpriteList::capacity() == PosList::capacity());
+
     SpriteList sprites{};
-    assert(sprites.items.size() == TILES_AROUND_COUNT);
-
-    PosList positions = tilesAround(rect);
-    assert(positions.items.size() == TILES_AROUND_COUNT);
-
-    for (int i = 0; i < positions.count; ++i)
+    for (const Position& pos: tilesAround(rect))
     {
-        // At this point we know the key exists in the map
-        const Position& currentPos = positions.items[i];
-        const Size& size = m_Rects.at(currentPos);
+        assert(m_Rects.find(pos) != m_Rects.end() &&
+            "The position key should exist in the map");
 
-        sprites.items[i] = Sprite{
-            glm::vec2{ currentPos.x, currentPos.y },
+        const Size& size = m_Rects.at(pos);
+        sprites.push_back(Sprite{
+            glm::vec2{ pos.x, pos.y },
             glm::vec2{ size.w, size.h }
-        };
+        });
     }
 
-    sprites.count = positions.count;
-
-    assert(sprites.count <= TILES_AROUND_COUNT);
     return sprites;
 }
 
