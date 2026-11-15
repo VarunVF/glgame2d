@@ -269,15 +269,15 @@ glm::vec4 Tilemap::computeTileUV(const Tileset& tileset, TileGID gid)
     int tilesetIndex = gid - tileset.firstgid;
     assert(tilesetIndex >= 0);
 
-    float xIndex = static_cast<float>(tilesetIndex % tileset.columns);
-    float yIndex = static_cast<float>(tilesetIndex / tileset.columns);
+    int xIndex = tilesetIndex % tileset.columns;
+    int yIndex = tilesetIndex / tileset.columns;
 
     float uPerTile = 1.0f / tileset.columns;
     float vPerTile = 1.0f / tileset.rows;
     
     return glm::vec4{
-         uPerTile * xIndex,
-        -vPerTile * yIndex,
+        uPerTile *  xIndex,
+        vPerTile * -yIndex,
         uPerTile * (1 + xIndex),
         vPerTile * (1 - yIndex)
     };
