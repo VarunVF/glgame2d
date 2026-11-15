@@ -70,6 +70,7 @@ add_library(glgame2d
 	"src/FontRenderer.cpp"
 	"src/Input.cpp"
 	"src/Keyboard.cpp"
+	"src/logging.cpp"
 	"src/Mixer.cpp"
 	"src/Mouse.cpp"
 	"src/QuadVAO.cpp"

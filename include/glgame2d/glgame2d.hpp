@@ -7,6 +7,7 @@
 #include <glgame2d/Font.hpp>
 #include <glgame2d/FontRenderer.hpp>
 #include <glgame2d/Input.hpp>
+#include <glgame2d/logging.hpp>
 #include <glgame2d/Mixer.hpp>
 #include <glgame2d/Renderer.hpp>
 #include <glgame2d/Shader.hpp>

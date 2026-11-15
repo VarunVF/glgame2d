@@ -17,11 +17,12 @@ FetchContent_MakeAvailable(catch2)
 add_executable(glgame2d_tests
     "tests.cpp"
     "camera_tests.cpp"
+    "font_renderer_tests.cpp"
+    "font_tests.cpp"
+    "logging_tests.cpp"
     "shader_tests.cpp"
     "sprite_tests.cpp"
     "texture_tests.cpp"
-    "font_tests.cpp"
-    "font_renderer_tests.cpp"
 )
 
 target_link_libraries(glgame2d_tests PRIVATE
