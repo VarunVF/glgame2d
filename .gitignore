@@ -1,8 +1,10 @@
 build/
 out/
+
 .cache/
-.vscode/
 .vs/
+.vscode/
 
 *.aps
+compile_commands.json
 CMakeSettings.json

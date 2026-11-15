@@ -4,6 +4,8 @@ project(glgame2d)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 option(GLGAME2D_SANITIZE "Build with ASan and UBSan" OFF)
 option(GLGAME2D_BUILD_TESTS "Build tests" ON)
 option(GLGAME2D_BUILD_EXAMPLES "Build example executables" ON)
