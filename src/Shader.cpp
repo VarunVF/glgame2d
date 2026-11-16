@@ -74,18 +74,18 @@ bool Shader::validateShaderSource(ShaderType type, unsigned int shaderID)
 {
     // Error detection
     int result;
-    glGetShaderiv(shaderID, GL_COMPILE_STATUS, &result);
+    GLCall( glGetShaderiv(shaderID, GL_COMPILE_STATUS, &result) );
     const char* typeStr = (type == ShaderType::VERTEX ? "vertex" : "fragment");
 
     if (result == GL_FALSE)
     {
         int length;
-        glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &length);
+        GLCall( glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &length) );
         char* message = (char*)alloca(length * sizeof(char));
-        glGetShaderInfoLog(shaderID, length, &length, message);
+        GLCall( glGetShaderInfoLog(shaderID, length, &length, message) );
 
         std::cerr << "[Shader] Failed to compile " << typeStr << " shader!\n" << message << "\n";
-        glDeleteShader(shaderID);
+        GLCall( glDeleteShader(shaderID) );
         return false;
     }
     else

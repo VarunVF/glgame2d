@@ -2,10 +2,12 @@
 
 #include <glad/glad.h>
 
-#include "common.hpp"
 #include <glgame2d/Camera.hpp>
 #include <glgame2d/Font.hpp>
+#include <glgame2d/GLCall.hpp>
 #include <glgame2d/Window.hpp>
+
+#include "common.hpp"
 
 
 TEST_CASE("Invalid font logs an error", "[Font]")

@@ -68,6 +68,7 @@ add_library(glgame2d
 	"src/Entity.cpp"
 	"src/Font.cpp"
 	"src/FontRenderer.cpp"
+	"src/GLCall.cpp"
 	"src/Input.cpp"
 	"src/Keyboard.cpp"
 	"src/logging.cpp"
