@@ -1,6 +1,8 @@
 #include <glgame2d/Mixer.hpp>
 
-#include <iostream>
+#include <cstdlib>
+
+#include "glgame2d/logging.hpp"
 
 #include <miniaudio.h>
 
@@ -14,7 +16,7 @@ Mixer::Mixer()
     result = ma_engine_init(NULL, &m_Engine);
     if (result != MA_SUCCESS)
     {
-        std::cerr << "[Mixer] Failed to initalise engine";
+        logging::error("[Mixer] Failed to initalise engine");
         std::exit(result);
     }
 }
@@ -37,7 +39,7 @@ Mixer::Sound Mixer::load(const char* soundFile)
 void Mixer::play(Sound &sound)
 {
     if (!sound.isLoaded) {
-        std::cerr << "[Mixer] Sound for playing was not loaded correctly\n";
+        logging::warn("[Mixer] Sound for playing was not loaded correctly");
         return;
     }
 

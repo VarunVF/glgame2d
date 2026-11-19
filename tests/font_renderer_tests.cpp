@@ -61,7 +61,7 @@ TEST_CASE("Font loads and renders without crashing", "[Font][FontRenderer]")
 
     SECTION("FontRenderer logs an error on missing Fonts")
     {
-        CerrCapture capture;
+        LogCapture capture;
         glgame2d::Font invalidFont{ "this/path/is/invalid", 64.0f };
 
         fontRenderer.drawBegin(window, camera);

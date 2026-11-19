@@ -4,13 +4,13 @@
 #include <cstdint>
 #include <filesystem>
 #include <fstream>
-#include <iostream>
 #include <vector>
 
 #include <glad/glad.h>
 
 #include "glgame2d/GLCall.hpp"
 #include "glgame2d/ensureContextOrAbort.hpp"
+#include "glgame2d/logging.hpp"
 
 
 namespace glgame2d {
@@ -25,10 +25,10 @@ Font::Font(const std::filesystem::path& fontFilePath, float fontSize)
 
     std::vector<uint8_t> fontTextureData = setupFont(m_FontFilePath);
     if (fontTextureData.empty()) {
-        std::cerr << "[Font] Failed to load font '" << m_FontFilePath << "'\n";
+        logging::error("[Font] Failed to load font '{}'", m_FontFilePath.string());
     }
     else {
-        std::cout << "[Font] Loaded font texture from '" << m_FontFilePath << "'\n";
+        logging::info("[Font] Loaded font texture from '{}'", m_FontFilePath.string());
         setupFontTexture(fontTextureData);
     }
 }
@@ -65,7 +65,7 @@ std::vector<uint8_t> Font::setupFont(const std::filesystem::path& fontFile)
     stbtt_fontinfo fontInfo = {};
 
     if (!stbtt_InitFont(&fontInfo, fontDataBuf.data(), 0)) {
-        std::cerr << "[Font] stbtt_InitFont() Failed!\n";
+        logging::error("[Font] stbtt_InitFont() Failed!");
         return std::vector<uint8_t>{};
     }
 
@@ -74,7 +74,7 @@ std::vector<uint8_t> Font::setupFont(const std::filesystem::path& fontFile)
     m_LineHeight = (ascent - descent + lineGap) * stbtt_ScaleForPixelHeight(&fontInfo, m_FontSize);
     
     uint32_t fontCount = stbtt_GetNumberOfFonts(fontDataBuf.data());
-    std::cout << "[Font] Font File: " << fontFile << " has " << fontCount << " fonts\n";
+    logging::info("[Font] Font File: {} has {} fonts", fontFile.string(), fontCount);
 
     std::vector<uint8_t> fontAtlasTextureData;
     fontAtlasTextureData.resize(fontAtlasWidth * fontAtlasHeight);
@@ -102,7 +102,7 @@ std::vector<uint8_t> Font::setupFont(const std::filesystem::path& fontFile)
     
     if (packSuccess == 0)
     {
-        std::cerr << "[Font] Glyphs do not fit in 512x512 atlas at size " << m_FontSize << " for '" << m_FontFilePath << "'\n";
+        logging::error("[Font] Glyphs do not fit in 512x512 atlas at size {} for '{}'", m_FontSize, m_FontFilePath.string());
         return std::vector<uint8_t>{};
     }
 

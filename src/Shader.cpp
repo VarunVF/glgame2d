@@ -8,6 +8,7 @@
 
 #include "glgame2d/GLCall.hpp"
 #include "glgame2d/ensureContextOrAbort.hpp"
+#include "glgame2d/logging.hpp"
 
 
 
@@ -84,13 +85,13 @@ bool Shader::validateShaderSource(ShaderType type, unsigned int shaderID)
         char* message = (char*)alloca(length * sizeof(char));
         GLCall( glGetShaderInfoLog(shaderID, length, &length, message) );
 
-        std::cerr << "[Shader] Failed to compile " << typeStr << " shader!\n" << message << "\n";
+        logging::error("[Shader] Failed to compile {} shader!\n{}", typeStr, message);
         GLCall( glDeleteShader(shaderID) );
         return false;
     }
     else
     {
-        std::clog << "[Shader] Successfully compiled " << typeStr << " shader\n";
+        logging::info("[Shader] Successfully compiled {} shader", typeStr);
         return true;
     }
 }
@@ -101,7 +102,7 @@ std::string Shader::readFile(const char* filePath)
     std::ifstream file{ filePath };
     if (!file.is_open())
     {
-        std::cerr << "[Shader] Failed to read shader file '" << filePath << "'\n";
+        logging::error("[Shader] Failed to read shader file '{}'", filePath);
     }
     buffer << file.rdbuf();
     return buffer.str();

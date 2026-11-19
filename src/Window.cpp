@@ -1,7 +1,7 @@
 #include "glgame2d/Window.hpp"
 #include "glgame2d/GLCall.hpp"
+#include "glgame2d/logging.hpp"
 
-#include <iostream>
 #include <stdexcept>
 #include <string>
 
@@ -64,7 +64,7 @@ Window::Window(int width, int height, const char* title, WindowType type, bool h
         glfwTerminate();
         throw std::runtime_error("[Window] Failed to initialise OpenGL context");
     }
-    std::clog << "[Window] OpenGL version: " << glGetString(GL_VERSION) << "\n";
+    logging::info("[Window] OpenGL version: {}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 
     // Tell OpenGL where it can draw
     GLCall( glViewport(0, 0, viewportWidth, viewportHeight) );
@@ -135,7 +135,7 @@ void Window::setIcon(const std::string& iconPath)
         stbi_image_free(image.pixels);
     }
     else {
-        std::cerr << "[Window] Failed to load icon image '" << iconPath << "'\n";
+        logging::warn("[Window] Failed to load icon image '{}'", iconPath);
     }
 }
 

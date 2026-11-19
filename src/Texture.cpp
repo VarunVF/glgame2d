@@ -8,6 +8,7 @@
 
 #include "glgame2d/GLCall.hpp"
 #include "glgame2d/ensureContextOrAbort.hpp"
+#include "glgame2d/logging.hpp"
 
 
 namespace glgame2d {
@@ -24,7 +25,7 @@ Texture::Texture(const std::filesystem::path& assetPath)
     unsigned char *data = stbi_load(assetPathStr.c_str(), &width, &height, &nrChannels, 0);
     if (!data)
     {
-        std::cerr << "[Texture] Failed to load texture: '" << assetPathStr << "'\n";
+        logging::warn("[Texture] Failed to load texture: '{}'", assetPathStr);
         stbi_image_free(data);
         initAsPlaceholder(*this);
     }
@@ -42,7 +43,7 @@ Texture::Texture(const std::filesystem::path& assetPath)
         GLCall( glGenerateMipmap(GL_TEXTURE_2D) );
         stbi_image_free(data);
 
-        std::clog << "[Texture] Loaded '" << assetPath << "' with " << nrChannels << " color channels\n";
+        logging::info("[Texture] Loaded '{}' with {} color channels", assetPath.string(), nrChannels);
     }
 }
 

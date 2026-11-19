@@ -7,7 +7,6 @@
 
 #include <cassert>
 #include <cstdint>
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -20,6 +19,7 @@
 
 #include "glgame2d/GLCall.hpp"
 #include "glgame2d/Shader.hpp"
+#include "glgame2d/logging.hpp"
 
 
 namespace glgame2d {
@@ -65,7 +65,7 @@ void FontRenderer::drawText(const Font& font,
     assert(m_InBatch && "drawBegin must be called before drawText");
     
     if (font.textureID() == 0) {
-        std::cerr << "[FontRenderer] Cannot draw invalid font (path '" << font.m_FontFilePath << "')\n";
+        logging::error("[FontRenderer] Cannot draw invalid font (path '{}')", font.m_FontFilePath.string());
         return;
     }
 

@@ -1,7 +1,8 @@
 #pragma once
 
-#include <iostream>
-#include <sstream>
+#include <string>
+#include <string_view>
+#include <utility>
 #include <vector>
 
 #include <glad/glad.h>
@@ -9,17 +10,32 @@
 
 #include "glgame2d/GLCall.hpp"
 #include "glgame2d/Window.hpp"
+#include "glgame2d/logging.hpp"
 
 
-struct CerrCapture
+// Captures everything logged while it lives, then restores the previous sink.
+class LogCapture
 {
-    CerrCapture() { old = std::cerr.rdbuf(buffer.rdbuf()); }
-    ~CerrCapture() { std::cerr.rdbuf(old); }
+public:
+    LogCapture()
+    {
+        m_Previous = glgame2d::logging::setSink(
+            [this](glgame2d::logging::Level, std::string_view text) {
+                m_Text.append(text);
+                m_Text.push_back('\n');
+            });
+    }
 
-    std::string str() const { return buffer.str(); }
+    ~LogCapture() { glgame2d::logging::setSink(std::move(m_Previous)); }
 
-    std::ostringstream buffer;
-    std::streambuf* old;
+    LogCapture(const LogCapture&) = delete;
+    LogCapture& operator=(const LogCapture&) = delete;
+
+    std::string str() const { return m_Text; }
+
+private:
+    std::string m_Text;
+    glgame2d::logging::Sink m_Previous;
 };
 
 

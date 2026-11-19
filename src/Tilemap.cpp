@@ -3,11 +3,12 @@
 #include <cassert>
 
 #include <algorithm>
-#include <iostream>
 #include <filesystem>
 #include <fstream>
 
 #include <nlohmann/json.hpp>
+
+#include "glgame2d/logging.hpp"
 
 
 namespace glgame2d {
@@ -32,11 +33,11 @@ Tilemap::Tilemap(const char* tilemapPath)
     std::ifstream stream{ tilemapPath };
     if (stream.is_open())
     {
-        std::clog << "[Tilemap] Loaded tilemap from '" << tilemapPath << "'\n";
+        logging::info("[Tilemap] Loaded tilemap from '{}'", tilemapPath);
     }
     else
     {
-        std::cerr << "[Tilemap] Failed to load tilemap from '" << tilemapPath << "'\n";
+        logging::error("[Tilemap] Failed to load tilemap from '{}'", tilemapPath);
         return;
     }
 
@@ -61,7 +62,7 @@ Tilemap::Tilemap(const char* tilemapPath)
         std::ifstream tilesetInfoStream{ tilesetInfoPath };
         if (!tilesetInfoStream.is_open())
         {
-            std::cerr << "[Tilemap] Failed to load tileset info from '" << tilesetInfoPath.string() << "'\n";
+            logging::error("[Tilemap] Failed to load tileset info from '{}'", tilesetInfoPath.string());
             continue;
         }
         nlohmann::json tilesetInfoJson = nlohmann::json::parse(tilesetInfoStream);
@@ -86,7 +87,7 @@ Tilemap::Tilemap(const char* tilemapPath)
         else
         {
             // Provide placeholder for missing assets to avoid crashing
-            std::cerr << "[Tilemap] Failed to load tileset image from '" << imagePath.string() << "'\n";
+            logging::warn("[Tilemap] Failed to load tileset image from '{}'", imagePath.string());
             m_Tilesets.emplace_back(
                 firstgid,
                 Texture::makePlaceholder(),
@@ -110,7 +111,7 @@ Tilemap::Tilemap(const char* tilemapPath)
         if (layerJson["type"] == "tilelayer")
         {
             if (layerJson["width"] != m_MapInfo.width || layerJson["height"] != m_MapInfo.height)
-                std::cerr << "[Tilemap] Warning: Layer dimensions do not match map dimensions\n";
+                logging::warn("[Tilemap] Layer dimensions do not match map dimensions");
             
             auto& currentLayer = m_TileLayers[zOrder];
             currentLayer.reserve(layerJson["data"].size());
@@ -250,7 +251,7 @@ const Tilemap::Tileset& Tilemap::getTilesetByGID(TileGID gid) const
     
     if (gid <= 0)
     {
-        std::cerr << "[Tilemap] Invalid Tile GID " << gid << "\n";
+        logging::warn("[Tilemap] Invalid Tile GID {}", gid);
         return m_Tilesets.front();
     }
 
