@@ -1,6 +1,6 @@
 #include "glgame2d/Renderer.hpp"
 
-#include <glad/glad.h>
+#include "glgame2d/OpenGL.hpp"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -50,6 +50,10 @@ void Renderer::clear(const Color &color) const
 
 void Renderer::setPolygonMode(PolygonMode mode)
 {
+#ifdef __EMSCRIPTEN__
+    // WebGL has no glPolygonMode: everything is drawn filled.
+    (void)mode;
+#else
     switch (mode)
     {
         case PolygonMode::FILL:
@@ -64,6 +68,7 @@ void Renderer::setPolygonMode(PolygonMode mode)
             GLCall( glPolygonMode(GL_FRONT_AND_BACK, GL_POINT) );
             break;
     }
+#endif
 }
 
 void Renderer::beginScene(const Camera &camera) const

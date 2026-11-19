@@ -3,7 +3,7 @@
 #include <filesystem>
 #include <string>
 
-#include <glad/glad.h>
+#include "glgame2d/OpenGL.hpp"
 #include <stb_image.h>
 
 #include "glgame2d/GLCall.hpp"

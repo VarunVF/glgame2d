@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include <string>
 
-#include <glad/glad.h>
+#include "glgame2d/OpenGL.hpp"
 #include <GLFW/glfw3.h>
 #include <stb_image.h>
 
@@ -63,13 +63,16 @@ Window::Window(int width, int height, const char* title, WindowType type, bool h
     
     glfwMakeContextCurrent(m_Window);
 
-    // Initialise glad before making OpenGL calls
+    // Initialise glad before making OpenGL calls. On the web the WebGL
+    // functions are linked directly and there is nothing to load.
+#ifndef __EMSCRIPTEN__
     if (gladLoadGL() == 0)
     {
         glfwDestroyWindow(m_Window);
         glfwTerminate();
         throw std::runtime_error("[Window] Failed to initialise OpenGL context");
     }
+#endif
     logging::info("[Window] OpenGL version: {}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 
     float xscale = 0.0f, yscale = 0.0f;

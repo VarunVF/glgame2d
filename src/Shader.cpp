@@ -1,6 +1,6 @@
 #include "glgame2d/Shader.hpp"
 
-#include <glad/glad.h>
+#include "glgame2d/OpenGL.hpp"
 
 #include <fstream>
 #include <sstream>
@@ -15,10 +15,35 @@
 namespace glgame2d {
 
 
-Shader::Shader(const char* vertexShaderSource, const char* fragmentShaderSource)
+#ifdef __EMSCRIPTEN__
+// WebGL 2 only accepts GLSL ES 3.00. The engine's shaders are GLSL 3.30 core,
+// which is close enough that swapping the version line and adding a default
+// precision is all that is needed.
+static std::string toGLSLES(const char* source)
+{
+    std::string src{ source };
+    const std::string desktop = "#version 330 core";
+    const std::string web = "#version 300 es\nprecision highp float;\nprecision highp int;";
+    if (auto pos = src.find(desktop); pos != std::string::npos)
+        src.replace(pos, desktop.size(), web);
+    return src;
+}
+#endif
+
+Shader::Shader(const char* vertexShaderSourceIn, const char* fragmentShaderSourceIn)
     : shaderProgram{ 0 }
 {
     ensureContextOrAbort();
+
+#ifdef __EMSCRIPTEN__
+    const std::string vertexES = toGLSLES(vertexShaderSourceIn);
+    const std::string fragmentES = toGLSLES(fragmentShaderSourceIn);
+    const char* vertexShaderSource = vertexES.c_str();
+    const char* fragmentShaderSource = fragmentES.c_str();
+#else
+    const char* vertexShaderSource = vertexShaderSourceIn;
+    const char* fragmentShaderSource = fragmentShaderSourceIn;
+#endif
 
     unsigned int vertexShader;
     GLCall(vertexShader = glCreateShader(GL_VERTEX_SHADER));

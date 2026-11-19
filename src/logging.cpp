@@ -49,7 +49,13 @@ StreamInfo inspect(std::FILE* stream) noexcept
 #else
     int fd = fileno(stream);
     info.exists = fd != -1;
+#ifdef __EMSCRIPTEN__
+    // Emscripten reports stdout/stderr as terminals, but they end up in the
+    // browser console, which shows ANSI escape codes as text.
+    info.color  = false;
+#else
     info.color  = isatty(fd) != 0;
+#endif  // __EMSCRIPTEN__
 #endif  // _WIN32
 
     return info;

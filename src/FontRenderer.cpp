@@ -10,7 +10,7 @@
 #include <string>
 #include <vector>
 
-#include <glad/glad.h>
+#include "glgame2d/OpenGL.hpp"
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>

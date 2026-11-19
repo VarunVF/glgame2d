@@ -20,16 +20,19 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(glm)
 
-# Obtain GLFW
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-FetchContent_Declare(
-	glfw
-	GIT_REPOSITORY	https://github.com/glfw/glfw.git
-	GIT_TAG 		3.4
-)
-FetchContent_MakeAvailable(glfw)
+# Obtain GLFW (Emscripten ships its own GLFW 3 port on top of the browser,
+# so it is only fetched and built for desktop)
+if(NOT EMSCRIPTEN)
+	set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+	set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+	set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+	FetchContent_Declare(
+		glfw
+		GIT_REPOSITORY	https://github.com/glfw/glfw.git
+		GIT_TAG 		3.4
+	)
+	FetchContent_MakeAvailable(glfw)
+endif()
 
 # Obtain nlohmann_json
 FetchContent_Declare(
@@ -82,24 +85,38 @@ add_library(glgame2d
 	"src/Tilemap.cpp"
 	"src/Window.cpp"
 
-	"src/glad/glad.c"
 	"src/miniaudio/miniaudio.c"
 	"src/stb/stb_image.c"
 	"src/stb/stb_truetype.c"
 )
 target_include_directories(glgame2d PUBLIC
 	"include/"
-	${OPENGL_INCLUDE_DIR}
 )
 
-# Link to libraries
-find_package(OpenGL REQUIRED)
-target_link_libraries(glgame2d PUBLIC
-	${OPENGL_LIBRARIES}
-	glfw
-	glm
-	nlohmann_json
-)
+if(EMSCRIPTEN)
+	# Web: WebGL 2 (OpenGL ES 3.0) and Emscripten's GLFW port. These are
+	# link options, PUBLIC so the game's final link picks them up.
+	target_link_options(glgame2d PUBLIC
+		"SHELL:-sUSE_GLFW=3"
+		"SHELL:-sMIN_WEBGL_VERSION=2"
+		"SHELL:-sMAX_WEBGL_VERSION=2"
+	)
+	target_link_libraries(glgame2d PUBLIC
+		glm
+		nlohmann_json
+	)
+else()
+	# Desktop: OpenGL 3.3 core loaded with glad
+	target_sources(glgame2d PRIVATE "src/glad/glad.c")
+	find_package(OpenGL REQUIRED)
+	target_include_directories(glgame2d PUBLIC ${OPENGL_INCLUDE_DIR})
+	target_link_libraries(glgame2d PUBLIC
+		${OPENGL_LIBRARIES}
+		glfw
+		glm
+		nlohmann_json
+	)
+endif()
 
 # Build tests
 if(GLGAME2D_BUILD_TESTS)

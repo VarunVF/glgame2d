@@ -6,7 +6,7 @@
 #include <fstream>
 #include <vector>
 
-#include <glad/glad.h>
+#include "glgame2d/OpenGL.hpp"
 
 #include "glgame2d/GLCall.hpp"
 #include "glgame2d/ensureContextOrAbort.hpp"

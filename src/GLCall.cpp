@@ -3,7 +3,7 @@
 #include <cassert>
 #include <unordered_map>
 
-#include <glad/glad.h>
+#include "glgame2d/OpenGL.hpp"
 
 #include "glgame2d/logging.hpp"
 
@@ -23,8 +23,9 @@ void checkGlError(const char* expression, const char* file, int line)
         { GL_INVALID_ENUM, "GL_INVALID_ENUM" },
         { GL_INVALID_VALUE, "GL_INVALID_VALUE" },
         { GL_INVALID_OPERATION, "GL_INVALID_OPERATION" },
-        { GL_STACK_OVERFLOW, "GL_STACK_OVERFLOW" },
-        { GL_STACK_UNDERFLOW, "GL_STACK_UNDERFLOW" },
+        // written as numbers: OpenGL ES / WebGL headers do not define them
+        { 0x0503, "GL_STACK_OVERFLOW" },
+        { 0x0504, "GL_STACK_UNDERFLOW" },
         { GL_OUT_OF_MEMORY, "GL_OUT_OF_MEMORY" },
         { 0x0507, "GL_CONTEXT_LOST" },
         { 0x8031, "GL_TABLE_TOO_LARGE" },

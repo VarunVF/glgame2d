@@ -1,7 +1,7 @@
 #include "glgame2d/QuadVAO.hpp"
 #include "glgame2d/GLCall.hpp"
 
-#include <glad/glad.h>
+#include "glgame2d/OpenGL.hpp"
 
 
 namespace glgame2d {
