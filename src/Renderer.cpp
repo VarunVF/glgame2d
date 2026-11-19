@@ -80,8 +80,7 @@ void Renderer::drawSprite(const Window& window, const Sprite& sprite, const glm:
 
     // set per-sprite model uniform
     glm::mat4 model(1.0f);
-    int width, height;
-    window.getSize(&width, &height);
+    auto [width, height] = window.getWindowSize();
     
     float transX = sprite.position[0] / width * 2;
     float transY = sprite.position[1] / height * 2;

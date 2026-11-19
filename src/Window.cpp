@@ -2,6 +2,7 @@
 #include "glgame2d/GLCall.hpp"
 #include "glgame2d/logging.hpp"
 
+#include <cassert>
 #include <stdexcept>
 #include <string>
 
@@ -50,11 +51,16 @@ Window::Window(int width, int height, const char* title, WindowType type, bool h
     m_Window = glfwCreateWindow(viewportWidth, viewportHeight, title, monitor, NULL);
     if (!m_Window)
     {
-        glfwDestroyWindow(m_Window);
         glfwTerminate();
         throw std::runtime_error("[Window] Failed to create GLFW window");
     }
+    // Callbacks need the instance, must set before registering callbacks
+    glfwSetWindowUserPointer(m_Window, this);
 
+    // Cache the values after window creation
+    glfwGetWindowSize(m_Window, &m_WindowWidth, &m_WindowHeight);
+    glfwGetFramebufferSize(m_Window, &m_FramebufferWidth, &m_FramebufferHeight);
+    
     glfwMakeContextCurrent(m_Window);
 
     // Initialise glad before making OpenGL calls
@@ -66,10 +72,16 @@ Window::Window(int width, int height, const char* title, WindowType type, bool h
     }
     logging::info("[Window] OpenGL version: {}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 
-    // Tell OpenGL where it can draw
-    GLCall( glViewport(0, 0, viewportWidth, viewportHeight) );
+    float xscale = 0.0f, yscale = 0.0f;
+    glfwGetWindowContentScale(m_Window, &xscale, &yscale);
+    glgame2d::logging::info("[Window] Window size: {}x{}, Framebuffer size: {}x{}, Content scale: {}x{}",
+        m_WindowWidth, m_WindowHeight, m_FramebufferWidth, m_FramebufferHeight, xscale, yscale);
 
-    // Update viewport on window resize
+    // Tell OpenGL where it can draw
+    GLCall(glViewport(0, 0, m_FramebufferWidth, m_FramebufferHeight));
+
+    // Update dimensions and viewport on resize
+    glfwSetWindowSizeCallback(m_Window, screenSizeCallback);
     glfwSetFramebufferSizeCallback(m_Window, framebufferSizeCallback);
 
     // Avoid screen tearing in fullscreen modes
@@ -79,6 +91,10 @@ Window::Window(int width, int height, const char* title, WindowType type, bool h
 
 Window::~Window()
 {
+    glfwSetWindowSizeCallback(m_Window, nullptr);
+    glfwSetFramebufferSizeCallback(m_Window, nullptr);
+    glfwSetWindowUserPointer(m_Window, nullptr);
+
     glfwDestroyWindow(m_Window);
     glfwTerminate();
 }
@@ -139,9 +155,14 @@ void Window::setIcon(const std::string& iconPath)
     }
 }
 
-void Window::getSize(int *width, int *height) const
+Window::WindowSize Window::getWindowSize() const
 {
-    glfwGetWindowSize(m_Window, width, height);
+    return { m_WindowWidth, m_WindowHeight };
+}
+
+Window::FramebufferSize Window::getFramebufferSize() const
+{
+    return { m_FramebufferWidth, m_FramebufferHeight };
 }
 
 GLFWwindow *Window::getGLFWWindow() const
@@ -149,9 +170,22 @@ GLFWwindow *Window::getGLFWWindow() const
     return m_Window;
 }
 
+void Window::screenSizeCallback(GLFWwindow* window, int width, int height)
+{
+    Window* instance = static_cast<Window*>(glfwGetWindowUserPointer(window));
+    assert(instance != nullptr);
+    instance->m_WindowWidth = width;
+    instance->m_WindowHeight = height;
+}
+
 void Window::framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
-    GLCall( glViewport(0, 0, width, height) );
+    Window* instance = static_cast<Window*>(glfwGetWindowUserPointer(window));
+    assert(instance != nullptr);
+    instance->m_FramebufferWidth = width;
+    instance->m_FramebufferHeight = height;
+
+    GLCall(glViewport(0, 0, width, height));
 }
 
 

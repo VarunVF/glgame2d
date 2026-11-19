@@ -17,6 +17,16 @@ public:
 		WINDOWED_FULLSCREEN,
 	};
 
+	struct WindowSize {
+		int width;
+		int height;
+	};
+
+	struct FramebufferSize {
+		int width;
+		int height;
+	};
+
 public:
 	Window(int width, int height, const char* title, WindowType type = WindowType::WINDOWED, bool hideWindow = false);
 	~Window();
@@ -34,14 +44,20 @@ public:
 
 	void setIcon(const std::string& iconPaths);
 
-	void getSize(int* width, int* height) const;
+	WindowSize getWindowSize() const;
+	FramebufferSize getFramebufferSize() const;
 	GLFWwindow* getGLFWWindow() const;
 
 private:
+	static void screenSizeCallback(GLFWwindow* window, int width, int height);
 	static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
 private:
 	GLFWwindow* m_Window;
+	int m_WindowWidth;
+	int m_WindowHeight;
+	int m_FramebufferWidth;
+	int m_FramebufferHeight;
 };
 
 

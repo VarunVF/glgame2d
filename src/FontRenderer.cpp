@@ -50,11 +50,10 @@ void FontRenderer::drawBegin(const Window& window, const Camera& camera)
     GLCall( glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) );
     GLCall( glEnable(GL_BLEND) );
 
-    int currentWindowWidth = 0, currentWindowHeight = 0;
-    window.getSize(&currentWindowWidth, &currentWindowHeight);
-    m_PixelScale = 2.0f / currentWindowHeight;
+    auto [width, height] = window.getWindowSize();
+    m_PixelScale = 2.0f / height;
     
-    float aspectRatio = static_cast<float>(currentWindowWidth) / static_cast<float>(currentWindowHeight);
+    float aspectRatio = static_cast<float>(width) / static_cast<float>(height);
     setupViewProjection(aspectRatio, camera.getViewMatrix());
 }
 

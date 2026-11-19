@@ -159,8 +159,7 @@ TEST_CASE("Pixel-based image tests", "[Font][FontRenderer]")
         int x1 = 0;
         REQUIRE(leftmostLitX(window, x1));
     
-        int width = 0, height = 0;    
-        glfwGetFramebufferSize(window.getGLFWWindow(), &width, &height);
+        auto [width, height] = window.getFramebufferSize();
         CAPTURE(x0, x1);
         REQUIRE(x0 - x1 == Catch::Approx(0.5f * height / 2).margin(2));
     }
@@ -254,9 +253,8 @@ TEST_CASE("Newline advances by the font's line height", "[Font][FontRenderer]")
     REQUIRE(tops.size() == 2);   // two separate lines of glyphs
 
     // FontRenderer scales by window height; readback is in framebuffer pixels (differs on HiDPI).
-    int winWidth = 0, winHeight = 0, fbWidth = 0, fbHeight = 0;
-    window.getSize(&winWidth, &winHeight);
-    glfwGetFramebufferSize(window.getGLFWWindow(), &fbWidth, &fbHeight);
+    auto [winWidth, winHeight] = window.getWindowSize();
+    auto [fbWidth, fbHeight] = window.getFramebufferSize();
     float expected = expectedAdvancePx * fbHeight / winHeight;
 
     int distance = tops[0] - tops[1];

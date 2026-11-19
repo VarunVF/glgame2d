@@ -47,9 +47,7 @@ inline glgame2d::Window makeWindow(int width = 640, int height = 480)
 
 inline std::vector<uint8_t> readFramebuffer(const glgame2d::Window& window)
 {
-    int width = 0, height = 0;
-    glfwGetFramebufferSize(window.getGLFWWindow(), &width, &height);
-
+    auto [width, height] = window.getFramebufferSize();
     std::vector<uint8_t> pixels;
     pixels.resize(static_cast<size_t>(width) * height * 4);
     GLCall( glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels.data()) );
@@ -68,8 +66,7 @@ inline size_t countLitPixels(const glgame2d::Window& window)
 
 inline bool leftmostLitX(const glgame2d::Window& window, int& outX)
 {
-    int width = 0, height = 0;
-    glfwGetFramebufferSize(window.getGLFWWindow(), &width, &height);
+    auto [width, height] = window.getFramebufferSize();
     std::vector<uint8_t> pixels = readFramebuffer(window);
 
     int minX = width;
@@ -89,8 +86,7 @@ inline bool leftmostLitX(const glgame2d::Window& window, int& outX)
 // Rows are framebuffer y (glReadPixels: row 0 is the bottom), so tops are descending.
 inline std::vector<int> litBandTops(const glgame2d::Window& window)
 {
-    int width = 0, height = 0;
-    glfwGetFramebufferSize(window.getGLFWWindow(), &width, &height);
+    auto [width, height] = window.getFramebufferSize();
     std::vector<uint8_t> pixels = readFramebuffer(window);
 
     auto rowLit = [&](int y) {

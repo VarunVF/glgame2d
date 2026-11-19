@@ -25,8 +25,7 @@ void Camera::setScale(float factor)
 
 void Camera::moveEaseTowards(const Sprite& sprite, const Window& window, float easing)
 {
-    int width, height;
-    window.getSize(&width, &height);
+    auto [width, height] = window.getWindowSize();
 
     // Avoid NaN
     if (width == 0 || height == 0)  // window size is zero when minimized
